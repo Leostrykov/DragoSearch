@@ -35,7 +35,7 @@ header {
 
 .logo {
     font-family: 'Raleway', sans-serif;
-    font-size: 24px;
+    font-size: 1.50rem;
     font-weight: bold;
 }
 
@@ -369,7 +369,7 @@ main {
     }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 431px) {
     .index_nav ul li a {
         visibility: hidden;
     }
@@ -413,5 +413,11 @@ main {
 
     .search_input {
         visibility: hidden;
+    }
+}
+
+@media (max-width: 350px) {
+    .logo {
+        font-size: 1.0rem;
     }
 }

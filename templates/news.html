@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for post in news %}
+        <article class="post_card">
+                <img class="post_image" src="../static/img/post-image demo.jpg" alt="Изображение поста">
+                <div class="post_card_content">
+                    <div class="post_card_about">
+                        <img class="user_icon" src="../static/img/avatar-demo.jpg" alt="Иконка пользователя">
+                        <div class="post_card_about_text">
+                            <h4>{{post.user.name}}</h4>
+                            <p>час назад · 1М просмотров</p>
+                        </div>
+                    </div>
+                    <h3 class="post_title">{{post.title}}</h3>
+                    <p class="post_text">{{post.content|truncate(80, true, '...')}}</p>
+                </div>
+            </article>
+    {% endfor %}
+{% endblock %}
