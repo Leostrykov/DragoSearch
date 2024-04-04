@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Войти | Регистрация</title>
+    <link rel="stylesheet" href="../static/css/reg2.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form action="#">
+                <h1>Создать аккаунт</h1>
+                <div class="social-icons">
+                    <a href="#" class="icon"><i class='bx bxl-google'></i></a>
+                    <a href="#" class="icon"><i class='bx bxl-github'></i></a>
+                </div>
+                <samp>или используй почту для регистрации</samp>
+                <input type="text" placeholder="Имя">
+                <input type="email" placeholder="Почта">
+                <input type="password" placeholder="Пароль">
+                <button>Регистрация</button>
+            </form>
+        </div>
+        <div class="form-container sign-in">
+            <form action="#">
+                <h1>Войти</h1>
+                <div class="social-icons">
+                    <a href="#" class="icon"><i class='bx bxl-google'></i></a>
+                    <a href="#" class="icon"><i class='bx bxl-github'></i></a>
+                </div>
+                <samp>или используй почту и пароль</samp>
+                <input type="email" placeholder="Почта">
+                <input type="password" placeholder="Пароль">
+                <a href="#" class="fp">Забыли пароль?</a>
+                <button>Войти</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Добро пожаловать!</h1>
+                    <p>Введите свои данные чтобы использовать сайт</p>
+                    <button class="hidden" id="login">Войти</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Привет, Друг!</h1>
+                    <p>Введите свои данные, чтобы использовать сайт</p>
+                    <button class="hidden" id="register">Зарегестрироваться</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/js/script.js"></script>
+</body>
+
+</html>
