@@ -1,13 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@font-face {
+  font-family: 'Raleway';
+  src: url('../fonts/raleway/Raleway-VariableFont_wght.ttf') format('truetype'),
+  url('../fonts/raleway/Raleway-Italic-VariableFont_wght.ttf') format('truetype');
+  font-style: normal;
+}
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Raleway", sans-serif;
 }
 body {
-  background-color: #c9d6ff;
+  background-color: #F9F9F9;
+  background-image: url('../img/login_background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   background: linear-gradient(to right #e2e2e2, #c9d6ff);
   display: flex;
   align-items: center;
@@ -15,9 +23,21 @@ body {
   flex-direction: column;
   height: 100vh;
 }
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5); /* черный цвет с 50% прозрачности */
+  z-index: -1;
+}
+
 .container {
   background-color: #fff;
-  border-radius: 30px;
+  border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
   position: relative;
   overflow: hidden;
@@ -40,7 +60,7 @@ body {
   margin: 15px 0 10px;
 }
 .container button {
-  background-color: #512da8;
+  background-color: #000;
   color: #fff;
   font-size: 12px;
   padding: 10px 45px;
@@ -138,16 +158,15 @@ body {
   overflow: hidden;
   transition: all 0.6s ease-in-out;
   z-index: 1000;
-  border-radius: 150px 0 0 100px;
+  border-radius: 0 10px 10px 0;
 }
 .container.active .toggle-container {
   transform: translateX(-100%);
-  border-radius: 0 150px 100px 0;
+  border-radius: 10px 0 0 10px;
 }
 .toggle {
-  background-color: #512da8;
+  background-color: #000;
   height: 100%;
-  background: linear-gradient(to right #5c6bc0, #512da8);
   color: #fff;
   position: relative;
   left: -100%;
@@ -185,4 +204,64 @@ body {
 }
 .container.active .toggle-right {
   transform: translateX(200%);
+}
+.for-mobile {
+  visibility: hidden;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    width: 40vw;
+    height: 25vw;
+    min-width: 768px;
+    min-height: 480px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px){
+  .container {
+    width: 70vw;
+    height: 45vw;
+    min-width: 650px;
+    min-height: 400px;
+  }
+}
+
+@media (min-width: 630px) and (max-width: 768px){
+  .container {
+    width: 90vw;
+    height: 60vw;
+    min-width: 458px;
+    min-height: 390px;
+  }
+}
+
+@media (max-width: 630px){
+  .container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .toggle-container {
+    visibility: hidden;
+    position: relative;
+  }
+
+  .sign-in {
+    width: 100%;
+  }
+
+  .sign-up {
+    width: 100%;
+  }
+
+  .for-mobile {
+    visibility: visible;
+    position: static;
+  }
+
+  .container.active .sign-up {
+    transform: translateX(0);
+  }
 }

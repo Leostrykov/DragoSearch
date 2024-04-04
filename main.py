@@ -12,9 +12,15 @@ def index():
     news = db_sess.query(News).filter(News.is_private != 1)
     return render_template('news.html', news=news)
 
+
 @app.route('/login')
 def login():
     return render_template('login.html')
+
+
+@app.route('/sing-up')
+def sing_up_mobile():
+    return render_template('sing-up-for-mobile.html')
 
 
 def craete_news():

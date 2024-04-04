@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Регистрация</title>
+    <link rel="stylesheet" href="../static/css/reg2.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="form-container sign-in">
+            <form action="#">
+                <h1>Создать аккаунт</h1>
+                <div class="social-icons">
+                    <a href="#" class="icon"><i class='bx bxl-google'></i></a>
+                    <a href="#" class="icon"><i class='bx bxl-github'></i></a>
+                </div>
+                <samp>или используй почту для регистрации</samp>
+                <input type="text" placeholder="Имя">
+                <input type="email" placeholder="Почта">
+                <input type="password" placeholder="Пароль">
+                <button>Регистрация</button>
+                <a href="{{ url_for('login') }}" class="fp for-mobile">Или войдите в аккаунт.</a>
+            </form>
+        </div>
+                <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-right">
+                    <h1>Добро пожаловать!</h1>
+                    <p>Начните пользоваться DragoSearch</p>
+                    <button onclick="window.location.href='{{ url_for('login') }}';" class="hidden" id="login">Войти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
