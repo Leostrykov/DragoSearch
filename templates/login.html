@@ -12,31 +12,34 @@
 <body>
     <div class="container" id="container">
         <div class="form-container sign-up">
-            <form action="#">
+            <form action="#" method="post">
+                {{ form_sing_up.hidden_tag() }}
+
                 <h1>Создать аккаунт</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class='bx bxl-google'></i></a>
                     <a href="#" class="icon"><i class='bx bxl-github'></i></a>
                 </div>
                 <samp>или используй почту для регистрации</samp>
-                <input type="text" placeholder="Имя">
-                <input type="email" placeholder="Почта">
-                <input type="password" placeholder="Пароль">
-                <button>Регистрация</button>
+                {{ form_sing_up.name(type="text", placeholder="Имя") }}
+                {{ form_sing_up.email(type="email", placeholder="Почта")}}
+                {{ form_sing_up.password(type="password", placeholder="Пароль") }}
+                <button name="submit" type="submit">Регистрация</button>
             </form>
         </div>
         <div class="form-container sign-in">
-            <form action="#">
+            <form action="#" method="post">
+                {{ form_sing_in.hidden_tag() }}
                 <h1>Войти</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class='bx bxl-google'></i></a>
                     <a href="#" class="icon"><i class='bx bxl-github'></i></a>
                 </div>
                 <samp>или используй почту и пароль</samp>
-                <input type="email" placeholder="Почта">
-                <input type="password" placeholder="Пароль">
+                {{ form_sing_in.email(type="email", placeholder="Почта") }}
+                {{ form_sing_in.password(type="password", placeholder="Пароль") }}
                 <a href="#" class="fp">Забыли пароль?</a>
-                <button>Войти</button>
+                <button name="submit" type="submit">Войти</button>
                 <a href="{{ url_for('sing_up_mobile') }}" class="fp for-mobile">Или зарегистрируйтесь.</a>
             </form>
         </div>
