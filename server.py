@@ -59,5 +59,5 @@ def craete_news():
 
 
 if __name__ == '__main__':
-    db_session.global_init('db/news.db')
+    db_session.global_init('.data/news.db')
     app.run()
