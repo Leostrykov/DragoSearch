@@ -7,4 +7,4 @@ class SingUpForm(FlaskForm):
     name = StringField('Имя', validators=[DataRequired()])
     email = StringField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
-    submit = SubmitField('Зарегистрироваться')
+    submit_sing_up = SubmitField('Зарегистрироваться')

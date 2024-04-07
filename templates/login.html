@@ -24,7 +24,7 @@
                 {{ form_sing_up.name(type="text", placeholder="Имя") }}
                 {{ form_sing_up.email(type="email", placeholder="Почта")}}
                 {{ form_sing_up.password(type="password", placeholder="Пароль") }}
-                <button name="submit" type="submit">Регистрация</button>
+                {{ form_sing_up.submit_sing_up }}
             </form>
         </div>
         <div class="form-container sign-in">
@@ -39,7 +39,7 @@
                 {{ form_sing_in.email(type="email", placeholder="Почта") }}
                 {{ form_sing_in.password(type="password", placeholder="Пароль") }}
                 <a href="#" class="fp">Забыли пароль?</a>
-                <button name="submit" type="submit">Войти</button>
+                {{ form_sing_in.submit_login }}
                 <a href="{{ url_for('sing_up_mobile') }}" class="fp for-mobile">Или зарегистрируйтесь.</a>
             </form>
         </div>

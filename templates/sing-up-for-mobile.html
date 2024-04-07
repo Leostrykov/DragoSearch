@@ -12,17 +12,18 @@
 <body>
     <div class="container" id="container">
         <div class="form-container sign-in">
-            <form action="#">
+            <form action="#" method="post">
+                {{ form_sing_up.hidden_tag() }}
                 <h1>Создать аккаунт</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class='bx bxl-google'></i></a>
                     <a href="#" class="icon"><i class='bx bxl-github'></i></a>
                 </div>
                 <samp>или используй почту для регистрации</samp>
-                <input type="text" placeholder="Имя">
-                <input type="email" placeholder="Почта">
-                <input type="password" placeholder="Пароль">
-                <button>Регистрация</button>
+                {{ form_sing_up.name(type="text", placeholder="Имя") }}
+                {{ form_sing_up.email(type="email", placeholder="Почта") }}
+                {{ form_sing_up.password(type="password", placeholder="Пароль") }}
+                {{ form_sing_up.submit_sing_up }}
                 <a href="{{ url_for('login') }}" class="fp for-mobile">Или войдите в аккаунт.</a>
             </form>
         </div>

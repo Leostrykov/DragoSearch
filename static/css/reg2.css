@@ -59,19 +59,6 @@ body::before {
   text-decoration: none;
   margin: 15px 0 10px;
 }
-.container button {
-  background-color: #000;
-  color: #fff;
-  font-size: 12px;
-  padding: 10px 45px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-top: 10px;
-  cursor: pointer;
-}
 .container button.hidden {
   background-color: transparent;
   border-color: #fff;
@@ -94,6 +81,20 @@ body::before {
   border-radius: 8px;
   width: 100%;
   outline: none;
+}
+.container input[type="submit"], .container button {
+  background-color: #000;
+  color: #fff;
+  font-size: 12px;
+  padding: 10px 45px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+  width: auto;
 }
 .form-container {
   position: absolute;
