@@ -18,6 +18,8 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
+    is_confirmed = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
+    confirmed_on = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
     news = orm.relationship("News", back_populates='user')
 
     def set_password(self, password):

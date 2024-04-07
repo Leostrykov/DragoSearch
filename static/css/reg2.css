@@ -219,6 +219,22 @@ body::before {
   visibility: hidden;
   position: relative;
 }
+.message_container {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  width: auto;
+  max-width: 400px;
+  height: auto;
+}
+.message_container h1 {
+  margin: 20px 0;
+}
 
 @media (min-width: 1024px) {
   .container {

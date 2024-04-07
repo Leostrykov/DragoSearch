@@ -12,19 +12,31 @@
 <body>
     <div class="container" id="container">
         <div class="form-container sign-in">
-            <form action="#" method="post">
+           <form action="#" method="post">
                 {{ form_sing_up.hidden_tag() }}
+
                 <h1>Создать аккаунт</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class='bx bxl-google'></i></a>
                     <a href="#" class="icon"><i class='bx bxl-github'></i></a>
                 </div>
                 <samp>или используй почту для регистрации</samp>
+                {% if message_sing_up %}
+                    <div class="error_message">{{message_sing_up}}</div>
+                {% endif %}
                 {{ form_sing_up.name(type="text", placeholder="Имя") }}
-                {{ form_sing_up.email(type="email", placeholder="Почта") }}
+                {% for error in form_sing_up.name.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
+                {{ form_sing_up.email(type="email", placeholder="Почта")}}
+                {% for error in form_sing_up.email.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
                 {{ form_sing_up.password(type="password", placeholder="Пароль") }}
+                {% for error in form_sing_up.password.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
                 {{ form_sing_up.submit_sing_up }}
-                <a href="{{ url_for('login') }}" class="fp for-mobile">Или войдите в аккаунт.</a>
             </form>
         </div>
                 <div class="toggle-container">
