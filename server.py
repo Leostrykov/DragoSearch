@@ -2,14 +2,21 @@ from flask import Flask, render_template
 from data import db_session
 from data.users import User
 from data.news import News
-from config import SECRET_KEY
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
 from forms.login import LoginForm
 from forms.sing_up import SingUpForm
 import logging
 
+# Закружаем ключи из .env
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 app = Flask(__name__)
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 file_handler = logging.FileHandler('errors.txt')
 file_handler.setLevel(logging.WARNING)
 app.logger.addHandler(file_handler)
