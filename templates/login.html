@@ -21,9 +21,21 @@
                     <a href="#" class="icon"><i class='bx bxl-github'></i></a>
                 </div>
                 <samp>или используй почту для регистрации</samp>
+                {% if message_sing_up %}
+                    <div class="error_message">{{message_sing_up}}</div>
+                {% endif %}
                 {{ form_sing_up.name(type="text", placeholder="Имя") }}
+                {% for error in form_sing_up.name.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
                 {{ form_sing_up.email(type="email", placeholder="Почта")}}
+                {% for error in form_sing_up.email.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
                 {{ form_sing_up.password(type="password", placeholder="Пароль") }}
+                {% for error in form_sing_up.password.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
                 {{ form_sing_up.submit_sing_up }}
             </form>
         </div>
@@ -36,8 +48,17 @@
                     <a href="#" class="icon"><i class='bx bxl-github'></i></a>
                 </div>
                 <samp>или используй почту и пароль</samp>
+                {% if message_login %}
+                    <div class="error_message">{{message_login}}</div>
+                {% endif %}
                 {{ form_sing_in.email(type="email", placeholder="Почта") }}
+                {% for error in form_sing_in.email.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
                 {{ form_sing_in.password(type="password", placeholder="Пароль") }}
+                {% for error in form_sing_in.password.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
                 <a href="#" class="fp">Забыли пароль?</a>
                 {{ form_sing_in.submit_login }}
                 <a href="{{ url_for('sing_up_mobile') }}" class="fp for-mobile">Или зарегистрируйтесь.</a>

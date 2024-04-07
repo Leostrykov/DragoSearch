@@ -2,3 +2,5 @@ SQLAlchemy
 Flask
 flask-wtf
 python-dotenv
+flask-login
+werkzeug

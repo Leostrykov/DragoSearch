@@ -45,6 +45,15 @@ body::before {
   max-width: 100%;
   min-height: 480px;
 }
+.error {
+  color: #bb1515;
+  margin: 3px 0;
+  font-size: 10px;
+}
+.error_message {
+  margin: 3px 0;
+  font-size: 10px;
+}
 .container p {
   font-size: 14px;
   line-height: 20px;
