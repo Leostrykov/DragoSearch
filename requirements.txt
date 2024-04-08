@@ -1,0 +1,9 @@
+SQLAlchemy
+Flask
+flask-wtf
+python-dotenv
+flask-login
+werkzeug
+itsdangerous
+requests
+urllib3<2.0
