@@ -159,6 +159,9 @@ body::before {
   height: 40px;
   border: 1px solid #000;
 }
+.social-icons svg {
+  border-radius: 100px;
+}
 .toggle-container {
   position: absolute;
   top: 0;

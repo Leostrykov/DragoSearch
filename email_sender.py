@@ -5,11 +5,6 @@ import mimetypes
 import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import logging
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s',
-                    filename='logs.log')
 
 
 def send_email(email, subject, text, type_message):
@@ -31,10 +26,9 @@ def send_email(email, subject, text, type_message):
         server.login(addr_from, password)
         server.send_message(msg)
         server.quit()
-        logging.info(f'Send message {email}')
         return True
     except Exception as e:
-        logging.error(f'Error send message {email}. Error: {e}')
+        print(f'Error send message {email}. Error: {e}')
 
 
 def send_token(email):

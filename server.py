@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
+from requests import post, get
 from data import db_session
 from data.users import User
 from data.news import News
@@ -7,11 +8,11 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from forms.login import LoginForm
 from forms.sing_up import SingUpForm
-import logging
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from email_sender import send_token, send_email
 from tokens import confirm_token
 import datetime
+from urllib.parse import urlencode
 
 # Загружаем ключи из .env, т.к glitch скрывает эти ключи от пользователей
 dotenv_path = join(dirname(__file__), '.env')
@@ -23,18 +24,10 @@ app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT')
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Логирование ошибок
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
-file_handler = logging.FileHandler('logs.log')
-file_handler.setLevel(logging.WARNING)
-app.logger.addHandler(file_handler)
-
 
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
-    logging.info(f'User id:{user_id} loging')
     return db_sess.query(User).get(user_id)
 
 
@@ -60,12 +53,15 @@ def login():
             user = db_sess.query(User).filter(User.email == form_login.email.data).first()
             if user and user.check_password(form_login.password.data):
                 login_user(user, remember=True)
-                logging.info(f'User email:{form_login.email.data} login')
+                send_email(user.email, 'Новый вход на DragoSearch',
+                           f'Вы вошли в DragoSearch '
+                           f'в {datetime.datetime.now().strftime("%A %d-%B-%y %H:%M:%S")} '
+                           f'\n---\nС уважением отдел оповещений DragoSearch', 'text')
                 return redirect('/')
             return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
                                    message_login='Неверный пароль или почта')
         except Exception as e:
-            logging.error(f'Error login. Error: {e}')
+            print(f'Error login. Error: {e}')
 
     elif form_sing_up.validate_on_submit() and form_sing_up.submit_sing_up.data:
         try:
@@ -78,7 +74,6 @@ def login():
             user.set_password(form_sing_up.password.data)
             db_sess.add(user)
             db_sess.commit()
-            logging.info(f'Sing-up user email:{form_sing_up.email.data}')
             login_user(user, remember=True)
             if send_token(form_sing_up.email.data):
                 return render_template('confirm_email.html', email=form_sing_up.email.data)
@@ -87,7 +82,7 @@ def login():
                                        message_sing_up='Не удалось отправить сообщение с подверждением.')
 
         except Exception as e:
-            logging.error(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
+            print(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
 
     return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up)
 
@@ -96,7 +91,6 @@ def login():
 def logout():
     if current_user.is_authenticated:
         logout_user()
-        logging.info(f'User {current_user.id}')
     return redirect("/")
 
 
@@ -115,7 +109,6 @@ def sing_up_mobile():
             user.set_password(form_sing_up.password.data)
             db_sess.add(user)
             db_sess.commit()
-            logging.info(f'Sing-up user email:{form_sing_up.email.data}')
             login_user(user, remember=True)
             if send_token(form_sing_up.email.data):
                 return render_template('confirm_email.html', email=form_sing_up.email.data)
@@ -124,7 +117,7 @@ def sing_up_mobile():
                                        message_sing_up='Не удалось отправить сообщение с подверждением.')
 
         except Exception as e:
-            logging.error(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
+            print(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
     return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up)
 
 
@@ -143,6 +136,48 @@ def confirm_email(token):
         db_sess.commit()
         send_email(user.email, 'Добро пожаловать в DragoSearch', 'Добро пожаловать в DragoSearch!', 'text')
     return redirect('/')
+
+
+@app.route('/login/authorized')
+def yandex_oauth():
+    if request.args.get('code', False):
+        # Если скрипт был вызван с указанием параметра "code" в URL,
+        # то выполняется запрос на получение токена
+        print(request.args)
+        print(request.data)
+        data = {
+            'grant_type': 'authorization_code',
+            'code': request.args.get('code'),
+            'client_id': os.environ.get('YANDEX_CLIENT_ID'),
+            'client_secret': os.environ.get('YANDEX_CLIENT_SECRET')
+        }
+        data = urlencode(data)
+        # Токен необходимо сохранить для использования в запросах к API Директа
+        access_token = post('https://oauth.yandex.ru/' + "token", data).json()['access_token']
+        ya_user_info = get(f'https://login.yandex.ru/info?format=json&oauth_token={access_token}').json()
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email==ya_user_info['default_email']).first()
+        if user is None:
+            new_user = User(name=ya_user_info['real_name'], email=ya_user_info['default_email'], is_confirmed=True,
+                            confirmed_on=datetime.datetime.now())
+            db_sess.add(new_user)
+            db_sess.commit()
+            login_user(new_user, remember=True)
+            send_email(user.email, 'Добро пожаловать в DragoSearch',
+                       'Добро пожаловать в DragoSearch! '
+                       'Мы рады что вы теперь с нами!\n---\nСистемма поздравлений DragoSearch!', 'text')
+            return redirect('/')
+        login_user(user, remember=True)
+        send_email(user.email, 'Новый вход на DragoSearch',
+                   f'Вы вошли в DragoSearch '
+                   f'в {datetime.datetime.now().strftime("%A %d-%B-%y %H:%M:%S")} '
+                   f'\n---\nС уважением отдел оповещений DragoSearch', 'text')
+        return redirect('/')
+    else:
+        # Если скрипт был вызван без указания параметра "code",
+        # то пользователь перенаправляется на страницу запроса доступа
+        return redirect('https://oauth.yandex.ru/' + "authorize?response_type=code&client_id={}".format(
+            os.environ.get('YANDEX_CLIENT_ID')))
 
 
 if __name__ == '__main__':
