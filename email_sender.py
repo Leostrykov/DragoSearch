@@ -34,6 +34,4 @@ def send_email(email, subject, text, type_message):
 def send_token(email):
     return send_email(email, 'Потвердите почту на DragoSearch',
                       render_template('confirm_message.html',
-                                      confirm_url=f'https://'
-                                                  f'soapy-spark-grass.glitch.me/confirm/{generate_token(email)}'),
-                      'html')
+                                      confirm_url=os.getenv('BASE_URL') + '/confirm/' + generate_token(email)),'html')
