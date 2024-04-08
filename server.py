@@ -109,19 +109,20 @@ def sing_up_mobile():
             db_sess = db_session.create_session()
             is_not_log = db_sess.query(User).filter(User.email == form_sing_up.email.data).first()
             if is_not_log is not None:
-                return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up,
+                return render_template('login.html', form_sing_up=form_sing_up,
                                        message_sing_up='Пользователь с такой почтой уже существует')
             user = User(name=form_sing_up.name.data, email=form_sing_up.email.data)
             user.set_password(form_sing_up.password.data)
             db_sess.add(user)
             db_sess.commit()
             logging.info(f'Sing-up user email:{form_sing_up.email.data}')
-            if send_email(form_sing_up.email.data, 'Добро пожаловать', 'Добро пожаловать на DragoSearch!'):
-                print('True')
-            else:
-                print('False')
             login_user(user, remember=True)
-            return redirect('/')
+            if send_token(form_sing_up.email.data):
+                return render_template('confirm_email.html', email=form_sing_up.email.data)
+            else:
+                return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+                                       message_sing_up='Не удалось отправить сообщение с подверждением.')
+
         except Exception as e:
             logging.error(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
     return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up)
