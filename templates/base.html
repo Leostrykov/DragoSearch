@@ -5,6 +5,7 @@
     <title>{{ title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../static/css/style.css">
+    <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
 </head>
 <body>
     <header>
@@ -26,6 +27,23 @@
                 {% endif %}
             </div>
         </div>
+        {% if not current_user.is_authenticated %}
+        <script>
+                YaAuthSuggest.init(
+              {
+                 client_id: 'e0fd35f9d8dd4371a33bb5a6085c689e',
+                 response_type: 'token',
+                 redirect_uri: 'https://dragosearch.glitch.me/login/authorized'
+              },
+              'https://dragosearch.glitch.me'
+           )
+           .then(({
+              handler
+           }) => handler())
+           .then(data => console.log('Сообщение с токеном', data))
+           .catch(error => console.log('Обработка ошибки', error));
+        </script>
+        {% endif %}
     </header>
     <main>
         <section class="left_colmn">
