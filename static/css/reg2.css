@@ -81,7 +81,7 @@ body::before {
   padding: 0 40px;
   height: 100%;
 }
-.container input {
+.container input, .fogot input {
   background-color: #eee;
   border: none;
   margin: 8px 0;
@@ -91,7 +91,7 @@ body::before {
   width: 100%;
   outline: none;
 }
-.container input[type="submit"], .container button {
+.container input[type="submit"], .container button, .fogot input[type='submit'] {
   background-color: #000;
   color: #fff;
   font-size: 12px;
@@ -238,6 +238,20 @@ body::before {
 .message_container h1 {
   margin: 20px 0;
 }
+.fogot{
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  width: auto;
+  max-width: 400px;
+  height: auto;
+}
+
 
 @media (min-width: 1024px) {
   .container {

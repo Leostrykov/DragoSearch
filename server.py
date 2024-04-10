@@ -8,11 +8,13 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from forms.login import LoginForm
 from forms.sing_up import SingUpForm
+from forms.fog_password import FogPassword
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from email_sender import send_token, send_email
 from tokens import confirm_token
 import datetime
 from urllib.parse import urlencode
+from generate_password import generate_password
 
 # Загружаем ключи из .env, т.к glitch скрывает эти ключи от пользователей
 dotenv_path = join(dirname(__file__), '.env')
@@ -141,6 +143,26 @@ def sing_up_mobile():
     return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up)
 
 
+@app.route('/login/fog-password', methods=['POST', 'GET'])
+def fog_password():
+    form_fog_pass = FogPassword()
+    if form_fog_pass.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form_fog_pass.email.data).first()
+        if user is None:
+            return render_template('fogot_password.html', form_fog_password=form_fog_pass,
+                                   message_fog_password='Мы не нашли пользователя с такой почтой')
+        password = generate_password()
+        if send_email(user.email, f'Восстановление пароля DragoSearch', f'Вы отправили запрос на генерацию нового пароля'
+                                                                     f'\nВот ваш новый пароль:{password}', 'text'):
+            user.set_password(password)
+            return render_template('confirm_fog_password.html', email=user.email)
+        else:
+            return render_template('fogot_password.html', form_fog_password=form_fog_pass,
+                                   message_fog_password='Нам не удалось вам отправить письмо')
+    return render_template('fogot_password.html', form_fog_password=form_fog_pass)
+
+
 # страница, которая получает токен потверждения аккаунта
 @app.route("/confirm/<token>")
 @login_required
@@ -206,4 +228,4 @@ def yandex_oauth():
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
-    app.run()
+    app.run(debug=True)
