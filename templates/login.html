@@ -54,7 +54,7 @@
                 {% for error in form_sing_in.password.errors %}
                     <div class="error">{{ error }}</div>
                 {% endfor %}
-                <a href="#" class="fp">Забыли пароль?</a>
+                <a href="{{url_for('fog_password')}}" class="fp">Забыли пароль?</a>
                 {{ form_sing_in.submit_login }}
                 <a href="{{ url_for('sing_up_mobile') }}" class="fp for-mobile">Или зарегистрируйтесь.</a>
             </form>

@@ -5,4 +5,4 @@ from wtforms.validators import DataRequired
 
 class FogPassword(FlaskForm):
     email = StringField('Почта', validators=[DataRequired()])
-    submit = SubmitField('Войти')
+    submit = SubmitField('Отправить')

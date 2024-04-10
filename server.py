@@ -156,6 +156,7 @@ def fog_password():
         if send_email(user.email, f'Восстановление пароля DragoSearch', f'Вы отправили запрос на генерацию нового пароля'
                                                                      f'\nВот ваш новый пароль:{password}', 'text'):
             user.set_password(password)
+            db_sess.commit()
             return render_template('confirm_fog_password.html', email=user.email)
         else:
             return render_template('fogot_password.html', form_fog_password=form_fog_pass,
@@ -228,4 +229,4 @@ def yandex_oauth():
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
-    app.run(debug=True)
+    app.run()
