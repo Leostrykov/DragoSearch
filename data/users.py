@@ -20,6 +20,8 @@ class User(SqlAlchemyBase, UserMixin):
                                      default=datetime.datetime.now)
     is_confirmed = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
     confirmed_on = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String, default=None)
+    avatar_is_file = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
     news = orm.relationship("News", back_populates='user')
 
     def set_password(self, password):

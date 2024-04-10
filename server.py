@@ -20,6 +20,7 @@ load_dotenv(dotenv_path)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+# Загружаем SECURITY_PASSWORD_SALT, он нужен для генерации ссылок подверждения
 app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT')
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -42,17 +43,20 @@ def index():
 # страница входа
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    # Страница доступна только не авторизованных пользователей
     if current_user.is_authenticated:
         return redirect('/')
 
     form_login = LoginForm()
     form_sing_up = SingUpForm()
+    # получение данных с form_login
     if form_login.validate_on_submit() and form_login.submit_login.data:
         try:
             db_sess = db_session.create_session()
             user = db_sess.query(User).filter(User.email == form_login.email.data).first()
             if user and user.check_password(form_login.password.data):
                 login_user(user, remember=True)
+                # отправляем сообщение о входе
                 send_email(user.email, 'Новый вход на DragoSearch',
                            f'Вы вошли в DragoSearch '
                            f'в {datetime.datetime.now().strftime("%A %d-%B-%y %H:%M:%S")} '
@@ -61,8 +65,10 @@ def login():
             return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
                                    message_login='Неверный пароль или почта')
         except Exception as e:
-            print(f'Error login. Error: {e}')
-
+            print(f'Error login email:{form_login.email.data}. Error: {e}')
+            return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+                                   message_login='Произошла не известная ошибка на сервере')
+    # получение данных с form_sing_up
     elif form_sing_up.validate_on_submit() and form_sing_up.submit_sing_up.data:
         try:
             db_sess = db_session.create_session()
@@ -70,19 +76,26 @@ def login():
             if is_not_log is not None:
                 return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
                                        message_sing_up='Пользователь с такой почтой уже существует')
-            user = User(name=form_sing_up.name.data, email=form_sing_up.email.data)
-            user.set_password(form_sing_up.password.data)
-            db_sess.add(user)
-            db_sess.commit()
-            login_user(user, remember=True)
-            if send_token(form_sing_up.email.data):
-                return render_template('confirm_email.html', email=form_sing_up.email.data)
+            if len(form_sing_up.password.data) >= 7:
+                user = User(name=form_sing_up.name.data, email=form_sing_up.email.data)
+                user.set_password(form_sing_up.password.data)
+                db_sess.add(user)
+                db_sess.commit()
+                login_user(user, remember=True)
+                # отправка письма с потверждением
+                if send_token(form_sing_up.email.data):
+                    return render_template('confirm_email.html', email=form_sing_up.email.data)
+                else:
+                    return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+                                           message_sing_up='Не удалось отправить сообщение с подверждением.')
             else:
                 return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
-                                       message_sing_up='Не удалось отправить сообщение с подверждением.')
+                                       message_sing_up='Пароль должен быть не менее 7 символов.')
 
         except Exception as e:
             print(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
+            return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+                                   message_sing_up='Произошла не известная ошибка.')
 
     return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up)
 
@@ -103,24 +116,32 @@ def sing_up_mobile():
             db_sess = db_session.create_session()
             is_not_log = db_sess.query(User).filter(User.email == form_sing_up.email.data).first()
             if is_not_log is not None:
-                return render_template('login.html', form_sing_up=form_sing_up,
+                return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up,
                                        message_sing_up='Пользователь с такой почтой уже существует')
-            user = User(name=form_sing_up.name.data, email=form_sing_up.email.data)
-            user.set_password(form_sing_up.password.data)
-            db_sess.add(user)
-            db_sess.commit()
-            login_user(user, remember=True)
-            if send_token(form_sing_up.email.data):
-                return render_template('confirm_email.html', email=form_sing_up.email.data)
+            if len(form_sing_up.password.data) >= 7:
+                user = User(name=form_sing_up.name.data, email=form_sing_up.email.data)
+                user.set_password(form_sing_up.password.data)
+                db_sess.add(user)
+                db_sess.commit()
+                login_user(user, remember=True)
+                if send_token(form_sing_up.email.data):
+                    return render_template('confirm_email.html', email=form_sing_up.email.data)
+                else:
+                    return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up,
+                                           message_sing_up='Не удалось отправить сообщение с подверждением.')
             else:
-                return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
-                                       message_sing_up='Не удалось отправить сообщение с подверждением.')
+                return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up,
+                                       message_sing_up='Пароль должен быть не менее 7 символов.')
 
         except Exception as e:
             print(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
+            return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up,
+                                   message_sing_up='Произошла не известная ошибка.')
+
     return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up)
 
 
+# страница, которая получает токен потверждения аккаунта
 @app.route("/confirm/<token>")
 @login_required
 def confirm_email(token):
@@ -129,6 +150,7 @@ def confirm_email(token):
     email = confirm_token(token)
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.email == current_user.email).first()
+    # если пользователь с такой почтой есть, то потверждаем
     if user.email == email:
         user.is_confirmed = True
         user.confirmed_on = datetime.datetime.now()
@@ -138,13 +160,12 @@ def confirm_email(token):
     return redirect('/')
 
 
+# страница для работы с Yandex id OAuth
 @app.route('/login/authorized')
 def yandex_oauth():
     if request.args.get('code', False):
         # Если скрипт был вызван с указанием параметра "code" в URL,
         # то выполняется запрос на получение токена
-        print(request.args)
-        print(request.data)
         data = {
             'grant_type': 'authorization_code',
             'code': request.args.get('code'),
@@ -152,14 +173,16 @@ def yandex_oauth():
             'client_secret': os.environ.get('YANDEX_CLIENT_SECRET')
         }
         data = urlencode(data)
-        # Токен необходимо сохранить для использования в запросах к API Директа
+        # получаем access_token для получения данных пользователя
         access_token = post('https://oauth.yandex.ru/token', data).json()['access_token']
+        # получаем данные пользователя из yandex id
         ya_user_info = get(f'https://login.yandex.ru/info?format=json&oauth_token={access_token}').json()
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email==ya_user_info['default_email']).first()
+        user = db_sess.query(User).filter(User.email == ya_user_info['default_email']).first()
         if user is None:
             new_user = User(name=ya_user_info['real_name'], email=ya_user_info['default_email'], is_confirmed=True,
-                            confirmed_on=datetime.datetime.now())
+                            confirmed_on=datetime.datetime.now(), avatar=ya_user_info['default_avatar_id'],
+                            avatar_is_file=False)
             db_sess.add(new_user)
             db_sess.commit()
             login_user(new_user, remember=True)

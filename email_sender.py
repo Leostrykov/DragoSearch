@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
+# функция отправления сообщения
 def send_email(email, subject, text, type_message):
     addr_from = os.getenv('MAIL_FROM')
     password = os.getenv('MAIL_PASSWORD')
@@ -31,6 +32,7 @@ def send_email(email, subject, text, type_message):
         print(f'Error send message {email}. Error: {e}')
 
 
+# функция отправки подверждения
 def send_token(email):
     return send_email(email, 'Потвердите почту на DragoSearch',
                       render_template('confirm_message.html',
