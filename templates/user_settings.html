@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="conteiner user_settings">
+    <h1>Редактирование аккаунта</h1>
+
+    <!-- Форма для редактирования данных -->
+    <form action="" method="post"  enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <label for="name">Имя:</label>
+        {{ form.name(value=current_user.name) }}
+
+        <label for="email">Email:</label>
+        {{ form.email(value=current_user.email) }}
+        <div class="horisontal" style="gap: 10px;">
+            {% if current_user.avatar_is_file is false and current_user.avatar is not none %}
+                <img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{current_user.avatar}}/islands-middle" alt="Иконка пользователя" width="42px" height="42px">
+            {% elif current_user.avatar_is_file and current_user.avatar is not none %}
+                <img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + current_user.avatar) }}" alt="Иконка пользователя">
+            {% else %}
+                <div class="user_icon" style="background-color: rgb(193, 193, 193); width: 42px; height: 42px;"></div>
+            {% endif %}
+        
+            <label for="avatar" class="load_file">Загрузить аватар</label>
+        </div> 
+        {{ form.avatar(style="display: none;") }}
+        <br>
+        <p for="aboutMe">Обо мне:</p><br>
+        <textarea id="about" name="about" style="width: 100%; height: 200px;">{{current_user.about}}</textarea>
+        <br>
+        <label for="password">Текущий пароль:</label>
+        {{ form.old_password(type='password') }}
+
+        <label for="newPassword">Новый пароль:</label>
+        {{form.new_password(type='password')}}
+
+        <label for="confirmNewPassword">Подтверждение нового пароля:</label>
+        {{form.repeat_password(type='password')}}
+        {{form.save}}
+    </form>
+
+    {% if message_error %}
+        <div id="error" style="color: red;">
+            <p>{{message_error}}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

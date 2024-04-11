@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from forms.login import LoginForm
 from forms.sing_up import SingUpForm
 from forms.fog_password import FogPassword
+from forms.set_user_sett import SetSettings
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from email_sender import send_token, send_email
 from tokens import confirm_token
@@ -224,6 +225,43 @@ def yandex_oauth():
         # то пользователь перенаправляется на страницу запроса доступа
         return redirect('https://oauth.yandex.ru/' + "authorize?response_type=code&client_id={}".format(
             os.environ.get('YANDEX_CLIENT_ID')))
+
+
+# страница настроек пользователя
+@app.route('/user/settings', methods=['GET', 'POST'])
+@login_required
+def user_settings():
+    form = SetSettings()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        user.name = form.name.data
+        if user.email != form.email.data:
+            send_email(user.email, 'Изменена почта', f'На вашем аккаунте изменена почта на {form.email.data}', 'text')
+            user.email = form.email.data
+        if form.avatar.data:
+            # загружаем изображение пользователя
+            f = form.avatar.data
+            user.avatar = f.filename
+            user.avatar_is_file = True
+            # и сохраняем в static img avatars папку
+            os.makedirs('static/img/avatars', exist_ok=True)
+            f.save(os.path.join('static/img/avatars', f.filename))
+        user.about = form.about.data
+        if form.new_password.data:
+            if (len(form.new_password.data) < 6 or len(form.repeat_password.data) < 6 or
+                    len(form.old_password.data) < 6):
+                return render_template('user_settings.html', form=form,
+                                       message_error='Пароль должен быть не менее 7 символов')
+            if user.check_password(form.old_password.data) and form.new_password.data == form.repeat_password.data:
+                user.set_password(form.new_password.data)
+                send_email(user.email, 'Изменение пароля', f'Ваш пароль был изменен',  'text')
+            else:
+                return render_template('user_settings.html', form=form,
+                                       message_error='Ошибка не правильный пароль или пароли не совпадают')
+        db_sess.commit()
+        return redirect('/')
+    return render_template('user_settings.html', form=form)
 
 
 if __name__ == '__main__':

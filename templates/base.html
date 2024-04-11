@@ -10,7 +10,7 @@
 <body>
     <header>
         <div class="logo">
-            <a href="">DragoSearch</a>
+            <a href="{{url_for('index')}}">DragoSearch</a>
         </div>
         <div class="header_utilities">
             <div class="header_search">
@@ -19,14 +19,14 @@
                     <button type="submit"></button>
                 </form>
             </div>
-            <div class="header_user_icon">
+            <div class="header_user_icon horisontal">
                 {% if current_user.is_authenticated %}
                     {% if current_user.avatar_is_file is false and current_user.avatar is not none %}
-                        <a><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{current_user.avatar}}/islands-small" alt="Иконка пользователя"></a>
+                        <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{current_user.avatar}}/islands-small" alt="Иконка пользователя"></a>
                     {% elif current_user.avatar_is_file and current_user.avatar is not none %}
-                        <a><img class="user_icon" src="../static/img/avatar-demo.jpg" alt="Иконка пользователя"></a>
+                        <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + current_user.avatar) }}" alt="Иконка пользователя"></a>
                     {% else %}
-                        <a><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
+                        <a href="{{ url_for('user_settings') }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
                     {% endif %}
                 {% else %}
                     <a href="{{ url_for('login') }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>

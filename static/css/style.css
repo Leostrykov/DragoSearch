@@ -17,6 +17,14 @@
     margin: 0;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', sans-serif;
+}
+
+p, label, input {
+    font-family: 'Roboto', sans-serif;
+}
+
 body {
     background-color: #F9F9F9;
 }
@@ -56,6 +64,31 @@ header {
     gap: 10px;
 }
 
+input {
+    background-color: #eee;
+    border: none;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+  }
+input[type='submit'], .load_file {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: auto;
+}
+
 .search_input {
     width: 18.8vw;
     min-height: 20px;
@@ -67,7 +100,10 @@ header {
     stroke-width: 0.06rem;
     letter-spacing: -0.06rem;
     line-height: 1.25rem;
-    padding-left: 0.5vw;
+    margin: 0;
+    padding: 0.5vh 10px;
+    border: 1px #404040 solid;
+    background-color: #fff;
 }
 
 .header_search form button{
@@ -155,7 +191,10 @@ main {
 }
 
 .right_colmn {
-    margin: 0 auto;
+    margin: 0 auto;  
+}
+
+.posts {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
@@ -221,6 +260,18 @@ main {
     color: #828282;
 }
 
+.conteiner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 40vw;
+}
+.horisontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 @media (min-width: 1440px) and (max-width: 2560px) {
     .index_nav ul li a {
         width: 13.75vw;
@@ -234,7 +285,7 @@ main {
     .post_card{
         width: 15.75vw;
     }
-    .right_colmn{
+    .posts {
         grid-template-columns: repeat(4, 1fr);
     }
     .search_input {
@@ -261,7 +312,7 @@ main {
     .post_card_about_text h4 {
         font-size: 0.78rem;
     }
-    .right_colmn{
+    .posts {
         grid-template-columns: repeat(3, 1fr);
     }
     .post_card{
@@ -279,6 +330,9 @@ main {
     }
     .search_input {
         visibility: visible;
+    }
+    .conteiner {
+        width: 40vw;
     }
 }
 
@@ -303,7 +357,7 @@ main {
         width: 24px;
         height: 24px;
     }
-    .right_colmn{
+    .posts {
         grid-template-columns: repeat(3, 1fr);
     }
     .post_card_about_text p {
@@ -319,6 +373,9 @@ main {
     }
     .search_input {
         visibility: hidden;
+    }
+    .conteiner {
+        width: 75vw;
     }
 }
 
@@ -345,7 +402,7 @@ main {
         width: 24px;
         height: 24px;
     }
-    .right_colmn{
+    .posts {
         grid-template-columns: repeat(2, 1fr);
     }
     .post_card_about_text p {
@@ -366,6 +423,9 @@ main {
 
     .search_input {
         visibility: hidden;
+    }
+    .conteiner {
+        width: 75vw;
     }
 }
 
@@ -392,7 +452,7 @@ main {
         width: 24px;
         height: 24px;
     }
-    .right_colmn{
+    .posts {
         grid-template-columns: repeat(1, 1fr);
     }
     .post_card_about_text p {
@@ -413,6 +473,9 @@ main {
 
     .search_input {
         visibility: hidden;
+    }
+    .conteiner {
+        width: 75vw;
     }
 }
 

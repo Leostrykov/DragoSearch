@@ -81,7 +81,7 @@ body::before {
   padding: 0 40px;
   height: 100%;
 }
-.container input, .fogot input {
+input {
   background-color: #eee;
   border: none;
   margin: 8px 0;
@@ -91,7 +91,7 @@ body::before {
   width: 100%;
   outline: none;
 }
-.container input[type="submit"], .container button, .fogot input[type='submit'] {
+input[type='submit'], button {
   background-color: #000;
   color: #fff;
   font-size: 12px;
