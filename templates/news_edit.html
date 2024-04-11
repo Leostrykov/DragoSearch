@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор статьи</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="https://cdn.tiny.cloud/1/5tyrxs24lzpbnc8ttuoi893y91cf5er42zbpo1ppasdb7h46/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+    <form action="" method="post">
+    <header>
+            <input type="submit" value="Сохранить" name="submit"></input>
+    </header>
+    <h2 style="margin: 10px 10px;">Заголовок статьи</h2>
+    <input type="text" name="title"  style="margin: 0 10px 20px 10px;">
+<script>
+        tinymce.init({
+        selector: 'textarea',  // Change this value according to your HTML
+        language: 'ru',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+        ai_request: (request, respondWith) => {
+            respondWith.string((signal) => fetch('http://127.0.0.1:5000/api/gigachat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer {{gigaauth_token}}'
+                    },
+                    body: JSON.stringify({
+                        'message': request.prompt
+                    })
+                    })
+                    .then(async (response) => {
+                            if (response) {
+                            const data = await response.json();
+                            if (data.error) {
+                                throw new Error(`${data.error.type}: ${data.error.message}`);
+                            } else if (response.ok) {
+                                // Extract the response content from the data returned by the API
+                                return data?.choices[0]?.message?.content?.trim();
+                            }
+                            } else {
+                            throw new Error('Failed to communicate with the ChatGPT API');
+                            }
+                        })
+                        );
+                       
+
+                }
+    });
+</script>
+    <textarea name="text">
+    </textarea>
+    </form>
+</body>
+</html>

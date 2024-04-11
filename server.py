@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, redirect
 from requests import post, get
-from data import db_session
+from data import db_session, giga_api
 from data.users import User
 from data.news import News
 import os
@@ -154,8 +154,8 @@ def fog_password():
             return render_template('fogot_password.html', form_fog_password=form_fog_pass,
                                    message_fog_password='Мы не нашли пользователя с такой почтой')
         password = generate_password()
-        if send_email(user.email, f'Восстановление пароля DragoSearch', f'Вы отправили запрос на генерацию нового пароля'
-                                                                     f'\nВот ваш новый пароль:{password}', 'text'):
+        if send_email(user.email, f'Восстановление пароля DragoSearch',
+                      f'Вы отправили запрос на генерацию нового пароля\nВот ваш новый пароль:{password}', 'text'):
             user.set_password(password)
             db_sess.commit()
             return render_template('confirm_fog_password.html', email=user.email)
@@ -264,7 +264,23 @@ def user_settings():
     return render_template('user_settings.html', form=form)
 
 
+# страница редактирования поста
+@app.route('/create_news', methods=['GET', 'POST'])
+@login_required
+def create_news():
+    if request.method == 'GET':
+        return render_template('news_edit.html')
+    elif request.method == 'POST':
+        db_sess = db_session.create_session()
+        new_post = News(title=request.form['title'], content=request.form['text'], is_private=False,
+                        user_id=current_user.id)
+        db_sess.add(new_post)
+        db_sess.commit()
+        return redirect('/')
+
+
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
+    app.register_blueprint(giga_api.blueprint)
     app.run()
