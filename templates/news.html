@@ -1,20 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for post in news %}
-        <article class="post_card">
-                <img class="post_image" src="../static/img/post-image demo.jpg" alt="Изображение поста">
-                <div class="post_card_content">
-                    <div class="post_card_about">
-                        <img class="user_icon" src="../static/img/avatar-demo.jpg" alt="Иконка пользователя">
-                        <div class="post_card_about_text">
-                            <h4>{{post.user.name}}</h4>
-                            <p>час назад · 1М просмотров</p>
+    <div class="posts">
+        {% for post in news %}
+            <article class="post_card">
+                    <img class="post_image" src="../static/img/news/{{post.image}}" alt="Изображение поста">
+                    <div class="post_card_content">
+                        <div class="post_card_about">
+                            {% if post.user.avatar_is_file is false and post.user.avatar is not none %}
+                                <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{post.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
+                            {% elif post.user.avatar_is_file and post.user.avatar is not none %}
+                                <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + post.user.avatar) }}" alt="Иконка пользователя"></a>
+                            {% else %}
+                                <a href="{{ url_for('user_settings') }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
+                            {% endif %}
+                            <div class="post_card_about_text">
+                                <h4>{{post.user.name}}</h4>
+                                <p>час назад · 1М просмотров</p>
+                            </div>
                         </div>
-                    </div>
-                    <h3 class="post_title">{{post.title}}</h3>
-                    <p class="post_text">{{post.content|truncate(80, true, '...')}}</p>
+                        <a href="news/{{post.id}}">
+                        <div class="post_card_about_text">
+                            <h3 class="post_title">{{post.title}}</h3>
+                            <p class="post_text">{{post.content|striptags|truncate(80, true, '...')}}</p>
+                        </div>
+                        </a>
                 </div>
             </article>
-    {% endfor %}
+            {% endfor %}
+
+    </div>
 {% endblock %}

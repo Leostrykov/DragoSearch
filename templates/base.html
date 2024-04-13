@@ -51,6 +51,11 @@
         </script>
         {% endif %}
     </header>
+    {% if current_user.is_confirmed is false %}
+    <header style="background-color: #fef38b; height: 30px; border-radius: 3px; justify-content: center;">
+        <p>Подвердите вашу почту, чтобы получить все возможности</p>
+    </header>
+    {% endif %}
     <main>
         <section class="left_colmn">
             <nav class="index_nav">

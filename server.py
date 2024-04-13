@@ -144,6 +144,7 @@ def sing_up_mobile():
     return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up)
 
 
+# Страница востоновления пароля
 @app.route('/login/fog-password', methods=['POST', 'GET'])
 def fog_password():
     form_fog_pass = FogPassword()
@@ -268,15 +269,33 @@ def user_settings():
 @app.route('/create_news', methods=['GET', 'POST'])
 @login_required
 def create_news():
-    if request.method == 'GET':
-        return render_template('news_edit.html')
-    elif request.method == 'POST':
-        db_sess = db_session.create_session()
-        new_post = News(title=request.form['title'], content=request.form['text'], is_private=False,
-                        user_id=current_user.id)
-        db_sess.add(new_post)
-        db_sess.commit()
-        return redirect('/')
+    if current_user.is_confirmed:
+        if request.method == 'GET':
+            return render_template('news_edit.html')
+        elif request.method == 'POST':
+            print(request.form)
+            if request.form['title'] and request.form['text']:
+                db_sess = db_session.create_session()
+                file = request.files['image']
+                os.makedirs(f'static/img/news', exist_ok=True)
+                file.save(os.path.join('static/img/news', file.filename))
+                new_post = News(title=request.form['title'], image=file.filename, content=request.form['text'],
+                                is_private=False, user_id=current_user.id)
+                db_sess.add(new_post)
+                db_sess.commit()
+                return redirect('/')
+            else:
+                return render_template('news_edit.html', message='Заполните все поля')
+    else:
+        return render_template('/')
+
+
+@app.route('/news/<int:news_id>')
+def news(news_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.id == news_id).first()
+    if news:
+        return render_template('user_text_post.html', news=news, title=news.title)
 
 
 if __name__ == '__main__':

@@ -8,51 +8,82 @@
     <script src="https://cdn.tiny.cloud/1/5tyrxs24lzpbnc8ttuoi893y91cf5er42zbpo1ppasdb7h46/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
     <header>
-            <input type="submit" value="Сохранить" name="submit"></input>
+        <div class="logo">
+            <a href="{{url_for('index')}}">DragoSearch</a>
+        </div>
+        <input type="submit" value="Сохранить" name="submit"></input>
     </header>
-    <h2 style="margin: 10px 10px;">Заголовок статьи</h2>
-    <input type="text" name="title"  style="margin: 0 10px 20px 10px;">
-<script>
-        tinymce.init({
-        selector: 'textarea',  // Change this value according to your HTML
-        language: 'ru',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        ai_request: (request, respondWith) => {
-            respondWith.string((signal) => fetch('http://127.0.0.1:5000/api/gigachat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer {{gigaauth_token}}'
-                    },
-                    body: JSON.stringify({
-                        'message': request.prompt
-                    })
-                    })
-                    .then(async (response) => {
-                            if (response) {
-                            const data = await response.json();
-                            if (data.error) {
-                                throw new Error(`${data.error.type}: ${data.error.message}`);
-                            } else if (response.ok) {
-                                // Extract the response content from the data returned by the API
-                                return data?.choices[0]?.message?.content?.trim();
-                            }
-                            } else {
-                            throw new Error('Failed to communicate with the ChatGPT API');
-                            }
-                        })
-                        );
-                       
+    <section style="padding: 0 20px;">
+        <h2>Заголовок статьи</h2>
+        <input type="text" name="title">
+        <h2>Обложка статьи</h2>
+        <div style="display: flex; flex-direction: column;">
+            <label id="button" for="file" class="load_file" style="width: 15%;">Загрузить аватар</label>
+            <input id="file" type="file" name="image" style="display: none;">
+            <img id="image" width="300px">
+        </div>
+        {% if message %}
+            <p class="error">{{message}}</p>
+        {% endif %}
+        <script>
+                tinymce.init({
+                selector: 'textarea',  // Change this value according to your HTML
+                language: 'ru',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                ai_request: (request, respondWith) => {
+                    respondWith.string((signal) => fetch('http://127.0.0.1:5000/api/gigachat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer {{gigaauth_token}}'
+                            },
+                            body: JSON.stringify({
+                                'message': request.prompt
+                            })
+                            })
+                            .then(async (response) => {
+                                    if (response) {
+                                    const data = await response.json();
+                                    if (data.error) {
+                                        throw new Error(`${data.error.type}: ${data.error.message}`);
+                                    } else if (response.ok) {
+                                        // Extract the response content from the data returned by the API
+                                        return data?.choices[0]?.message?.content?.trim();
+                                    }
+                                    } else {
+                                    throw new Error('Failed to communicate with the ChatGPT API');
+                                    }
+                                })
+                                );
+                            
 
-                }
-    });
-</script>
-    <textarea name="text">
-    </textarea>
+                        }
+            });
+        </script>
+        <textarea name="text">
+        </textarea>
+    </section>
     </form>
+    <script>
+            document.getElementById('file').addEventListener('change', function() {
+                var file = this.files[0];
+                var image = document.getElementById('image');
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    image.src = e.target.result;
+                };
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                } else {
+                    image.src = 'default.jpg';
+                }
+            });
+    </script>
 </body>
 </html>

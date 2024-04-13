@@ -5,7 +5,7 @@
     <h1>Редактирование аккаунта</h1>
 
     <!-- Форма для редактирования данных -->
-    <form action="" method="post"  enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <label for="name">Имя:</label>
         {{ form.name(value=current_user.name) }}
@@ -14,11 +14,11 @@
         {{ form.email(value=current_user.email) }}
         <div class="horisontal" style="gap: 10px;">
             {% if current_user.avatar_is_file is false and current_user.avatar is not none %}
-                <img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{current_user.avatar}}/islands-middle" alt="Иконка пользователя" width="42px" height="42px">
+                <img id="image" class="user_icon" src="https://avatars.yandex.net/get-yapic/{{current_user.avatar}}/islands-middle" alt="Иконка пользователя" width="42px" height="42px">
             {% elif current_user.avatar_is_file and current_user.avatar is not none %}
-                <img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + current_user.avatar) }}" alt="Иконка пользователя">
+                <img id="image" class="user_icon" src="{{ url_for('static', filename='img/avatars/' + current_user.avatar) }}" alt="Иконка пользователя">
             {% else %}
-                <div class="user_icon" style="background-color: rgb(193, 193, 193); width: 42px; height: 42px;"></div>
+                <div id="image" class="user_icon" style="background-color: rgb(193, 193, 193); width: 42px; height: 42px;"></div>
             {% endif %}
         
             <label for="avatar" class="load_file">Загрузить аватар</label>
@@ -45,4 +45,21 @@
         </div>
     {% endif %}
 </div>
+<script>
+    document.getElementById('avatar').addEventListener('change', function() {
+        var file = this.files[0];
+        var image = document.getElementById('image');
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            image.src = e.target.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            image.src = 'default.jpg';
+        }
+    });
+</script>
 {% endblock %}
