@@ -295,7 +295,23 @@ def news(news_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id).first()
     if news:
-        return render_template('user_text_post.html', news=news, title=news.title)
+        news.views += 1
+        db_sess.commit()
+        return render_template('user_text_post.html', news=news, title=news.title, base_url=os.environ.get('BASE_URL'))
+
+
+@app.route('/news/ai/<int:news_id>')
+def ai300(news_id):
+    endpoint = 'https://300.ya.ru/api/sharing-url'
+    response = post(
+        endpoint,
+        json={
+            'article_url': f'https://profuse-lateral-aftermath.glitch.me/news/1'
+        },
+        headers={'Authorization': f'OAuth {os.environ.get("300_AI_TOKEN")}'}
+    )
+    print(response.json())
+    return redirect(response.json()['sharing_url'])
 
 
 if __name__ == '__main__':

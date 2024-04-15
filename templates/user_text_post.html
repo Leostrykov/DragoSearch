@@ -1,7 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <section class="conteiner" style="width: 76vw;">
+    <section class="conteiner article-formatted-body" style="width: 76vw;">
+        <div class="post_header">
+            <div class="post_card_about" style="border-radius: 10px; padding: 10px 11px 9px 0; width: fit-content;">
+                {% if news.user.avatar_is_file is false and news.user.avatar is not none %}
+                    <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{news.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
+                {% elif news.user.avatar_is_file and news.user.avatar is not none %}
+                    <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + news.user.avatar) }}" alt="Иконка пользователя"></a>
+                {% else %}
+                    <a href="{{ url_for('user_settings') }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
+                {% endif %}
+                <div class="post_card_about_text">
+                    <h4>{{news.user.name}}</h4>
+                    <p>{{news.created_date.date()}} · {{news.views}} просмотров</p>
+                </div>
+            </div>
+        </div>
         <h1 style="font-size: 40px;">{{news.title}}</h1>
         <img src="../static/img/news/{{news.image}}" style="width: 100%;height: 50vw;max-height:450px;object-fit: cover;object-position: center;border-radius:20px;">
         {{news.content | safe}}

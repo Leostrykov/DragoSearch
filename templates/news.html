@@ -16,7 +16,7 @@
                             {% endif %}
                             <div class="post_card_about_text">
                                 <h4>{{post.user.name}}</h4>
-                                <p>час назад · 1М просмотров</p>
+                                <p>{{post.created_date.date()}} · {{post.views}} просмотров</p>
                             </div>
                         </div>
                         <a href="news/{{post.id}}">
