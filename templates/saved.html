@@ -5,22 +5,22 @@
     <div class="posts">
         {% for like in saved %}
             <article class="post_card">
-                    <a href="news/{{like.post.id}}"><img class="post_image" src="../static/img/news/{{like.post.image}}" alt="Изображение поста"></a>
+                    <a href="{{url_for('news', news_id=like.post.id)}}"><img class="post_image" src="../static/img/news/{{like.post.image}}" alt="Изображение поста"></a>
                     <div class="post_card_content">
                         <div class="post_card_about">
                             {% if like.post.user.avatar_is_file is false and like.post.user.avatar is not none %}
-                                <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{like.post.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
+                                <a href="{{ url_for('user', user_id=like.post.user_id) }}"><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{like.post.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
                             {% elif like.post.user.avatar_is_file and like.post.user.avatar is not none %}
-                                <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + like.post.user.avatar) }}" alt="Иконка пользователя"></a>
+                                <a href="{{ url_for('user', user_id=like.post.user_id) }}"><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + like.post.user.avatar) }}" alt="Иконка пользователя"></a>
                             {% else %}
-                                <a href="{{ url_for('user_settings') }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
+                                <a href="{{ url_for('user', user_id=like.post.user_id) }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
                             {% endif %}
                             <div class="post_card_about_text">
                                 <h4>{{like.post.user.name}}</h4>
                                 <p>{{like.post.created_date.date()}} · {{like.post.views}} просмотров</p>
                             </div>
                         </div>
-                        <a href="news/{{like.post.id}}">
+                        <a href="{{url_for('news', news_id=like.post.id)}}">
                         <div class="post_card_about_text">
                             <h3 class="post_title">{{like.post.title}}</h3>
                             <p class="post_text">{{like.post.content|striptags|truncate(80, true, '...')}}</p>

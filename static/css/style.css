@@ -324,6 +324,15 @@ main {
     height: 24px;
 }
 
+.user_about {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2em;
+    margin-bottom: 2em;
+}
+
 @media (min-width: 1440px) and (max-width: 2560px) {
     .index_nav ul li a {
         width: 13.75vw;

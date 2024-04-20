@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="display: flex;align-items: center;flex-direction: row;justify-content: space-between;">
+        <div class="user_about">
+            {% if user.avatar_is_file is false and user.avatar is not none %}
+                <a><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{user.avatar}}/islands-68" alt="Иконка пользователя" width="65px" height="65px"></a>
+            {% elif user.avatar_is_file and user.avatar is not none %}
+                <a><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + user.avatar) }}" alt="Иконка пользователя" width="65px" height="65px"></a>
+            {% else %}
+                <a><div class="user_icon" style="background-color: rgb(193, 193, 193);height: 65px; width: 65px;"></div></a>
+            {% endif %}
+            <div class="user_card_about_text">
+                <h2 style="font-size: 2em;">{{user.name}}</h4>
+                <p style="font-size: 0.8em;margin-top: 0.5em;color: #bebebe;">В DragoSearch c {{user.created_date.date()}}</p>
+                <p style="margin-top: 0.1em;font-size: 0.8em;">{{user.about}}</p>
+            </div>
+        </div>
+        {% if user.id == current_user.id %}
+            <a class="action_button" href="{{url_for('user_settings')}}"><img src="../static/img/manage_accounts.svg"></a>
+        {% endif %}
+    </div>
+    <div class="posts">
+        {% for post in news %}
+            <article class="post_card">
+                    <a href="{{url_for('news', news_id=post.id)}}"><img class="post_image" src="../static/img/news/{{post.image}}" alt="Изображение поста"></a>
+                    <div class="post_card_content">
+                        <div class="post_card_about">
+                            {% if post.user.avatar_is_file is false and post.user.avatar is not none %}
+                                <a><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{post.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
+                            {% elif post.user.avatar_is_file and post.user.avatar is not none %}
+                                <a><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + post.user.avatar) }}" alt="Иконка пользователя"></a>
+                            {% else %}
+                                <a><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
+                            {% endif %}
+                            <div class="post_card_about_text">
+                                <h4>{{post.user.name}}</h4>
+                                <p>{{post.created_date.date()}} · {{post.views}} просмотров</p>
+                            </div>
+                        </div>
+                        <a href="{{url_for('news', news_id=post.id)}}">
+                        <div class="post_card_about_text">
+                            <h3 class="post_title">{{post.title}}</h3>
+                            <p class="post_text">{{post.content|striptags|truncate(80, true, '...')}}</p>
+                        </div>
+                        </a>
+                </div>
+            </article>
+            {% endfor %}
+
+    </div>
+{% endblock %}

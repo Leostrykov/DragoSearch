@@ -5,11 +5,11 @@
         <div class="post_header">
             <div class="post_card_about" style="border-radius: 10px; padding: 10px 11px 9px 0; width: fit-content;">
                 {% if news.user.avatar_is_file is false and news.user.avatar is not none %}
-                    <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{news.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
+                    <a href="{{ url_for('user', user_id=news.user_id) }}"><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{news.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
                 {% elif news.user.avatar_is_file and news.user.avatar is not none %}
-                    <a href="{{ url_for('user_settings') }}"><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + news.user.avatar) }}" alt="Иконка пользователя"></a>
+                    <a href="{{ url_for('user', user_id=news.user_id) }}"><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + news.user.avatar) }}" alt="Иконка пользователя"></a>
                 {% else %}
-                    <a href="{{ url_for('user_settings') }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
+                    <a href="{{ url_for('user', user_id=news.user_id) }}"><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
                 {% endif %}
                 <div class="post_card_about_text">
                     <h4>{{news.user.name}}</h4>

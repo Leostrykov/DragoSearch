@@ -358,6 +358,15 @@ def edit_news(news_id):
         return render_template('/')
 
 
+@app.route('/user/<int:user_id>')
+def user(user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == user_id).first()
+    news = db_sess.query(News).filter(News.user_id == user_id).all()
+    if user:
+        return render_template('user.html', user=user, news=news)
+
+
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
