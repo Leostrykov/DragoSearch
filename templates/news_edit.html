@@ -17,12 +17,12 @@
     </header>
     <section style="padding: 0 20px;">
         <h2>Заголовок статьи</h2>
-        <input type="text" name="title">
+        <input type="text" name="title" value="{{news.title}}">
         <h2>Обложка статьи</h2>
         <div style="display: flex; flex-direction: column;">
             <label id="button" for="file" class="load_file" style="width: 15%;">Загрузить обложку</label>
             <input id="file" type="file" name="image" style="display: none;">
-            <img id="image" width="300px">
+            <img id="image" width="300px" src="../static/img/news/{{news.image}}">
         </div>
         {% if message %}
             <p class="error">{{message}}</p>
@@ -65,6 +65,7 @@
             });
         </script>
         <textarea name="text">
+            {{news.content | safe}}
         </textarea>
     </section>
     </form>

@@ -332,6 +332,32 @@ def saved():
     return render_template('saved.html', saved=saved, selected='saved')
 
 
+@app.route('/edit_news/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def edit_news(news_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.id == news_id).first()
+    if current_user.is_confirmed and news.user_id == current_user.id:
+        if request.method == 'GET':
+            return render_template('news_edit.html', news=news)
+        elif request.method == 'POST':
+            if request.form['title'] and request.form['text']:
+
+                if request.files['image']:
+                    file = request.files['image']
+                    os.makedirs(f'static/img/news', exist_ok=True)
+                    file.save(os.path.join('static/img/news', file.filename))
+                    news.image = file.filename
+                news.title = request.form['title']
+                news.content = request.form['text']
+                db_sess.commit()
+                return redirect('/')
+            else:
+                return render_template('news_edit.html', message='Заполните все поля', news=news)
+    else:
+        return render_template('/')
+
+
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
