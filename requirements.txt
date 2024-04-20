@@ -8,3 +8,4 @@ itsdangerous
 requests
 urllib3<2.0
 WTForms
+waitress

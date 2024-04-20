@@ -17,6 +17,7 @@ from tokens import confirm_token
 import datetime
 from urllib.parse import urlencode
 from generate_password import generate_password
+from waitress import serve
 
 # Загружаем ключи из .env, т.к glitch скрывает эти ключи от пользователей
 dotenv_path = join(dirname(__file__), '.env')
@@ -371,4 +372,5 @@ if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
     app.register_blueprint(giga_api.blueprint)
-    app.run()
+    # app.run()
+    serve(app)
