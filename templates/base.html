@@ -60,10 +60,10 @@
         <section class="left_colmn">
             <nav class="index_nav">
                 <ul>
-                    <li class="select"><img src="../static/img/home.svg" alt="Главная"><a href="">Главная</a></li>
+                    <li {% if selected == 'home' %} class="select" {% endif %}><img src="../static/img/home.svg" alt="Главная"><a href="{{url_for('index')}}">Главная</a></li>
                     <li><img src="../static/img/subscribes.svg" alt="Подписки"><a href="">Подписки</a></li>
                     <li><img src="../static/img/explore.svg" alt="Темы"><a href="">Темы</a></li>
-                    <li><img src="../static/img/bookmark.svg" alt="Закладки"><a href="">Закладки</a></li>
+                    <li {% if selected == 'saved' %} class="select" {% endif %}><img src="../static/img/bookmark.svg" alt="Закладки"><a href="{{url_for('saved')}}">Закладки</a></li>
                 </ul>
             </nav>
             <p class="commercial_text">©DragoSearch 2024</p>

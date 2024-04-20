@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <section class="conteiner article-formatted-body" style="width: 76vw;">
+    <section class="conteiner" style="width: 76vw;">
         <div class="post_header">
             <div class="post_card_about" style="border-radius: 10px; padding: 10px 11px 9px 0; width: fit-content;">
                 {% if news.user.avatar_is_file is false and news.user.avatar is not none %}
@@ -16,9 +16,18 @@
                     <p>{{news.created_date.date()}} · {{news.views}} просмотров</p>
                 </div>
             </div>
+            {% if current_user %}
+                {% if not like %}
+                    <a class="non_liked" href="{{url_for('news_like', news_id=news.id, action='like')}}"><img src="../static/img/favorite.svg" style="margin: auto 0;"></a>
+                {% else %}
+                    <a class="liked" href="{{url_for('news_like', news_id=news.id, action='dislike')}}"><img src="../static/img/favorite_liked.svg" style="margin: auto 0;"></a>
+                {% endif %}
+            {% endif %}
         </div>
         <h1 style="font-size: 40px;">{{news.title}}</h1>
         <img src="../static/img/news/{{news.image}}" style="width: 100%;height: 50vw;max-height:450px;object-fit: cover;object-position: center;border-radius:20px;">
-        {{news.content | safe}}
+        <div class="article">
+            {{news.content | safe}}
+        </div>
     </section>
 {% endblock %}

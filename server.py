@@ -3,6 +3,7 @@ from requests import post, get
 from data import db_session, giga_api
 from data.users import User
 from data.news import News
+from data.likes import Likes
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -40,7 +41,7 @@ def load_user(user_id):
 def index():
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.is_private != 1)
-    return render_template('news.html', title='DragoSearch', news=news)
+    return render_template('news.html', title='DragoSearch', news=news, selected='home')
 
 
 # страница входа
@@ -273,7 +274,6 @@ def create_news():
         if request.method == 'GET':
             return render_template('news_edit.html')
         elif request.method == 'POST':
-            print(request.form)
             if request.form['title'] and request.form['text']:
                 db_sess = db_session.create_session()
                 file = request.files['image']
@@ -290,28 +290,46 @@ def create_news():
         return render_template('/')
 
 
+# сраница поста
 @app.route('/news/<int:news_id>')
 def news(news_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id).first()
+    like = db_sess.query(Likes).filter(Likes.news_id == news_id, Likes.user_id == current_user.id).first()
     if news:
         news.views += 1
         db_sess.commit()
-        return render_template('user_text_post.html', news=news, title=news.title, base_url=os.environ.get('BASE_URL'))
+        return render_template('user_text_post.html', news=news, title=news.title, base_url=os.environ.get('BASE_URL'), like=like)
 
 
-@app.route('/news/ai/<int:news_id>')
-def ai300(news_id):
-    endpoint = 'https://300.ya.ru/api/sharing-url'
-    response = post(
-        endpoint,
-        json={
-            'article_url': f'https://profuse-lateral-aftermath.glitch.me/news/1'
-        },
-        headers={'Authorization': f'OAuth {os.environ.get("300_AI_TOKEN")}'}
-    )
-    print(response.json())
-    return redirect(response.json()['sharing_url'])
+# обработка лайков
+@app.route('/news/like/<int:news_id>/<action>')
+def news_like(news_id, action):
+    if action == 'like':
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(News.id == news_id).first()
+        if news and current_user:
+            like = Likes(user_id=current_user.id, news_id=news_id)
+            db_sess.add(like)
+            db_sess.commit()
+            return redirect(f'/news/{news_id}')
+    elif action == 'dislike':
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(News.id == news_id).first()
+        if news and current_user:
+            like = db_sess.query(Likes).filter(Likes.news_id == news_id, Likes.user_id == current_user.id).first()
+            if like:
+                db_sess.delete(like)
+                db_sess.commit()
+                return redirect(f'/news/{news_id}')
+
+
+@app.route('/saved')
+@login_required
+def saved():
+    db_sess = db_session.create_session()
+    saved = db_sess.query(Likes).filter(Likes.user_id == current_user.id).all()
+    return render_template('saved.html', saved=saved, selected='saved')
 
 
 if __name__ == '__main__':

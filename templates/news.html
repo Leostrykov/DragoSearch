@@ -4,7 +4,7 @@
     <div class="posts">
         {% for post in news %}
             <article class="post_card">
-                    <img class="post_image" src="../static/img/news/{{post.image}}" alt="Изображение поста">
+                    <a href="news/{{post.id}}"><img class="post_image" src="../static/img/news/{{post.image}}" alt="Изображение поста"></a>
                     <div class="post_card_content">
                         <div class="post_card_about">
                             {% if post.user.avatar_is_file is false and post.user.avatar is not none %}

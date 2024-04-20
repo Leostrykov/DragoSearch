@@ -222,6 +222,7 @@ main {
 
 .post_image {
     border-radius: 10px 10px 0 0;
+    width: 100%;
 }
 
 .post_card_content {
@@ -304,6 +305,23 @@ main {
 
 .ai {
     box-shadow: -10px -10px var(--spread) 0px #5B51D8, 0 -10px var(--spread) 0px #833AB4, 10px -10px var(--spread) 0px #E1306C, 10px 0 var(--spread) 0px #FD1D1D, 10px 10px var(--spread) 0px #F77737, 0 10px var(--spread) 0px #FCAF45, -10px 10px var(--spread) 0px #FFDC80;
+}
+
+.article {
+    width: 55vw;
+    margin-top: 1em;
+    line-height: 1.3em;
+    letter-spacing: 0.01em;
+}
+
+.non_liked img {
+    fill: #fff;
+}
+
+.liked img {
+    fill: #bb1515;
+    width: 24px;
+    height: 24px;
 }
 
 @media (min-width: 1440px) and (max-width: 2560px) {
@@ -411,6 +429,9 @@ main {
     .conteiner {
         width: 75vw;
     }
+    .article {
+        width: 55vw;
+    }
 }
 
 @media (min-width: 425px) and (max-width: 768px) {
@@ -459,6 +480,9 @@ main {
         visibility: hidden;
     }
     .conteiner {
+        width: 75vw;
+    }
+    .article {
         width: 75vw;
     }
 }
