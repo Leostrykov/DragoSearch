@@ -373,4 +373,4 @@ if __name__ == '__main__':
     db_session.global_init('.data/news.db')
     app.register_blueprint(giga_api.blueprint)
     # app.run()
-    serve(app)
+    serve(app, host='0.0.0.0', port=5000)
