@@ -11,14 +11,25 @@
                 <a><div class="user_icon" style="background-color: rgb(193, 193, 193);height: 65px; width: 65px;"></div></a>
             {% endif %}
             <div class="user_card_about_text">
-                <h2 style="font-size: 2em;">{{user.name}}</h4>
+                <h2 style="font-size: 2em;">{{user.name}}</h2>
                 <p style="font-size: 0.8em;margin-top: 0.5em;color: #bebebe;">В DragoSearch c {{user.created_date.date()}}</p>
                 <p style="margin-top: 0.1em;font-size: 0.8em;">{{user.about}}</p>
             </div>
         </div>
-        {% if user.id == current_user.id %}
-            <a class="action_button" href="{{url_for('user_settings')}}"><img src="../static/img/manage_accounts.svg"></a>
-        {% endif %}
+        <div style="height: 100%;display: flex;flex-direction: row;align-items: center;justify-content: center;gap: 1em;">
+            {% if current_user.is_authenticated and user.id != current_user.id%}
+                {% if is_subscribed %}
+                    <a class="action_button" href="{{url_for('subscribe', user_id=user.id, action='unsubscribe')}}"><p>Отписаться</p></a>
+                {% else %}
+                    <a class="action_button" href="{{url_for('subscribe', user_id=user.id, action='subscribe')}}"><p>Подписаться</p></a>
+                {% endif %}
+            {% endif %}
+            {% if user.id == current_user.id %}
+                <a class="action_button" href="{{url_for('user_settings')}}"><img src="../static/img/manage_accounts.svg"></a>
+                <a class="action_button" href="{{url_for('create_news')}}"><img src="../static/img/add.svg"></a>
+            {% endif %}
+        </div>
+
     </div>
     <div class="posts">
         {% for post in news %}

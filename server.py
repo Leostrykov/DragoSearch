@@ -4,6 +4,7 @@ from data import db_session, giga_api
 from data.users import User
 from data.news import News
 from data.likes import Likes
+from data.subscribes import Subscribes
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -41,7 +42,7 @@ def load_user(user_id):
 @app.route('/')
 def index():
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter(News.is_private != 1)
+    news = db_sess.query(News).filter(News.is_private != 1).order_by(News.created_date.desc()).all()
     return render_template('news.html', title='DragoSearch', news=news, selected='home')
 
 
@@ -263,7 +264,7 @@ def user_settings():
                 return render_template('user_settings.html', form=form,
                                        message_error='Ошибка не правильный пароль или пароли не совпадают')
         db_sess.commit()
-        return redirect('/')
+        return redirect(f'/user/{current_user.id}')
     return render_template('user_settings.html', form=form)
 
 
@@ -273,7 +274,7 @@ def user_settings():
 def create_news():
     if current_user.is_confirmed:
         if request.method == 'GET':
-            return render_template('news_edit.html')
+            return render_template('news_edit.html', news=None)
         elif request.method == 'POST':
             if request.form['title'] and request.form['text']:
                 db_sess = db_session.create_session()
@@ -286,9 +287,9 @@ def create_news():
                 db_sess.commit()
                 return redirect('/')
             else:
-                return render_template('news_edit.html', message='Заполните все поля')
+                return render_template('news_edit.html', message='Заполните все поля', news=None)
     else:
-        return render_template('/')
+        return redirect('/')
 
 
 # сраница поста
@@ -296,7 +297,10 @@ def create_news():
 def news(news_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id).first()
-    like = db_sess.query(Likes).filter(Likes.news_id == news_id, Likes.user_id == current_user.id).first()
+    if current_user.is_authenticated:
+        like = db_sess.query(Likes).filter(Likes.news_id == news_id, Likes.user_id == current_user.id).first()
+    else:
+        like = False
     if news:
         news.views += 1
         db_sess.commit()
@@ -305,6 +309,7 @@ def news(news_id):
 
 # обработка лайков
 @app.route('/news/like/<int:news_id>/<action>')
+@login_required
 def news_like(news_id, action):
     if action == 'like':
         db_sess = db_session.create_session()
@@ -330,7 +335,7 @@ def news_like(news_id, action):
 def saved():
     db_sess = db_session.create_session()
     saved = db_sess.query(Likes).filter(Likes.user_id == current_user.id).all()
-    return render_template('saved.html', saved=saved, selected='saved')
+    return render_template('saved.html', saved=saved[::-1], selected='saved')
 
 
 @app.route('/edit_news/<int:news_id>', methods=['GET', 'POST'])
@@ -364,13 +369,59 @@ def user(user_id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == user_id).first()
     news = db_sess.query(News).filter(News.user_id == user_id).all()
+    if current_user.is_authenticated:
+        is_subscribed = db_sess.query(Subscribes).filter(Subscribes.user_id == current_user.id,
+                                                         Subscribes.fav_user_id == user_id).first()
+    else:
+        is_subscribed = False
     if user:
-        return render_template('user.html', user=user, news=news)
+        return render_template('user.html', user=user, news=news, is_subscribed=is_subscribed)
+
+
+@app.route('/user/subscribe/<int:user_id>/<action>')
+@login_required
+def subscribe(user_id, action):
+    if action == 'subscribe':
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == user_id).first()
+        if user and current_user:
+            sub = Subscribes(user_id=current_user.id, fav_user_id=user.id)
+            db_sess.add(sub)
+            db_sess.commit()
+            return redirect(f'/user/{user_id}')
+    elif action == 'unsubscribe':
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == user_id).first()
+        if user and current_user:
+            sub = db_sess.query(Subscribes).filter(Subscribes.fav_user_id == user_id,
+                                                   Subscribes.user_id == current_user.id).first()
+            if sub:
+                db_sess.delete(sub)
+                db_sess.commit()
+                return redirect(f'/user/{user_id}')
+
+
+@app.route('/favorite_users')
+@login_required
+def favorite_user_news():
+    db_sess = db_session.create_session()
+    subscribes = [i.fav_user_id for i in db_sess.query(Subscribes).filter(Subscribes.user_id == current_user.id).all()]
+    sub_news = db_sess.query(News).filter(News.user_id.in_(subscribes)).order_by(News.created_date.desc()).all()
+    return render_template('subscribes_users.html', posts=sub_news, selected='subscribed')
+
+
+@app.route('/search')
+def search():
+    search = request.args.get('query')
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter((News.title.ilike(f'%{search}%')) |
+                                      (News.content.ilike(f'%{search}%'))).order_by(News.created_date.desc()).all()
+    return render_template('search.html', news=news, search=search)
 
 
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
     app.register_blueprint(giga_api.blueprint)
-    app.run(debug=True)
+    app.run()
     # serve(app, host='0.0.0.0', port=5000)
