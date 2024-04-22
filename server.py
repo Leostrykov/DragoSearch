@@ -423,5 +423,5 @@ if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
     app.register_blueprint(giga_api.blueprint)
-    app.run()
-    # serve(app, host='0.0.0.0', port=5000)
+    # app.run()
+    serve(app, host='0.0.0.0', port=5000)

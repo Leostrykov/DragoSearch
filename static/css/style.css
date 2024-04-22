@@ -138,6 +138,11 @@ input[type='submit'], .load_file {
     height: 32px;
 }
 
+.large {
+    width: 64px;
+    height: 64px;
+}
+
 main {
     display: flex;
     flex-direction: row;
@@ -312,6 +317,10 @@ main {
     margin-top: 1em;
     line-height: 1.3em;
     letter-spacing: 0.01em;
+}
+
+.article * {
+    margin-bottom: 1em;
 }
 
 .non_liked img {

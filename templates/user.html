@@ -4,11 +4,11 @@
     <div style="display: flex;align-items: center;flex-direction: row;justify-content: space-between;">
         <div class="user_about">
             {% if user.avatar_is_file is false and user.avatar is not none %}
-                <a><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{user.avatar}}/islands-68" alt="Иконка пользователя" width="65px" height="65px"></a>
+                <a><img class="user_icon large" src="https://avatars.yandex.net/get-yapic/{{user.avatar}}/islands-68" alt="Иконка пользователя" width="65px" height="65px"></a>
             {% elif user.avatar_is_file and user.avatar is not none %}
-                <a><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + user.avatar) }}" alt="Иконка пользователя" width="65px" height="65px"></a>
+                <a><img class="user_icon large" src="{{ url_for('static', filename='img/avatars/' + user.avatar) }}" alt="Иконка пользователя" width="65px" height="65px"></a>
             {% else %}
-                <a><div class="user_icon" style="background-color: rgb(193, 193, 193);height: 65px; width: 65px;"></div></a>
+                <a><div class="user_icon large" style="background-color: rgb(193, 193, 193);height: 65px; width: 65px;"></div></a>
             {% endif %}
             <div class="user_card_about_text">
                 <h2 style="font-size: 2em;">{{user.name}}</h2>
