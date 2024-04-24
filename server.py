@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from requests import post, get
-from data import db_session, giga_api, api_upload_images
+from data import db_session, giga_api
 from data.users import User
 from data.news import News
 from data.likes import Likes
