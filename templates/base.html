@@ -61,9 +61,10 @@
             <nav class="index_nav">
                 <ul>
                     <li {% if selected == 'home' %} class="select" {% endif %}><img src="../static/img/home.svg" alt="Главная"><a href="{{url_for('index')}}">Главная</a></li>
-                    <li {% if selected == 'subscribed' %} class="select" {% endif %}><img src="../static/img/subscribes.svg" alt="Подписки"><a href="{{url_for('favorite_user_news')}}">Подписки</a></li>
-                    <li><img src="../static/img/explore.svg" alt="Темы"><a href="">Темы</a></li>
-                    <li {% if selected == 'saved' %} class="select" {% endif %}><img src="../static/img/bookmark.svg" alt="Закладки"><a href="{{url_for('saved')}}">Закладки</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li {% if selected == 'subscribed' %} class="select" {% endif %}><img src="../static/img/subscribes.svg" alt="Подписки"><a href="{{url_for('favorite_user_news')}}">Подписки</a></li>
+                        <li {% if selected == 'saved' %} class="select" {% endif %}><img src="../static/img/bookmark.svg"  alt="Сохранённое"><a href="{{url_for('saved')}}">Сохранённое</a></li>
+                    {% endif %}
                 </ul>
             </nav>
             <p class="commercial_text">©DragoSearch 2024</p>
@@ -71,7 +72,17 @@
         <section class="right_colmn">
             {% block content %}{% endblock %}
         </section>
-    </main>
-    <script src="../static/js/windows.js"></script>
+        </main>
+        {% if current_user.is_authenticated %}
+            <div class="mobile-nav">
+                <nav class="index_nav">
+                    <ul>
+                        <li {% if selected == 'home' %} class="select" {% endif %}><img src="../static/img/home.svg" alt="Главная"><a href="{{url_for('index')}}">Главная</a></li>
+                        <li {% if selected == 'subscribed' %} class="select" {% endif %}><img src="../static/img/subscribes.svg" alt="Подписки"><a href="{{url_for('favorite_user_news')}}">Подписки</a></li>
+                        <li {% if selected == 'saved' %} class="select" {% endif %}><img src="../static/img/bookmark.svg"  alt="Сохранённое"><a href="{{url_for('saved')}}">Сохранённое</a></li>
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
 </body>
 </html>

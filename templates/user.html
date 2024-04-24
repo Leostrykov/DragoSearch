@@ -32,32 +32,39 @@
 
     </div>
     <div class="posts">
-        {% for post in news %}
-            <article class="post_card">
-                    <a href="{{url_for('news', news_id=post.id)}}"><img class="post_image" src="../static/img/news/{{post.image}}" alt="Изображение поста"></a>
-                    <div class="post_card_content">
-                        <div class="post_card_about">
-                            {% if post.user.avatar_is_file is false and post.user.avatar is not none %}
-                                <a><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{post.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
-                            {% elif post.user.avatar_is_file and post.user.avatar is not none %}
-                                <a><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + post.user.avatar) }}" alt="Иконка пользователя"></a>
-                            {% else %}
-                                <a><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
-                            {% endif %}
-                            <div class="post_card_about_text">
-                                <h4>{{post.user.name}}</h4>
-                                <p>{{post.created_date.date()}} · {{post.views}} просмотров</p>
+        {% if news%}
+            {% for post in news %}
+                <article class="post_card">
+                        <a href="{{url_for('news', news_id=post.id)}}"><img class="post_image" src="../static/img/news/{{post.image}}" alt="Изображение поста"></a>
+                        <div class="post_card_content">
+                            <div class="post_card_about">
+                                {% if post.user.avatar_is_file is false and post.user.avatar is not none %}
+                                    <a><img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{post.user.avatar}}/islands-small" alt="Иконка пользователя"></a>
+                                {% elif post.user.avatar_is_file and post.user.avatar is not none %}
+                                    <a><img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + post.user.avatar) }}" alt="Иконка пользователя"></a>
+                                {% else %}
+                                    <a><div class="user_icon" style="background-color: rgb(193, 193, 193);"></div></a>
+                                {% endif %}
+                                <div class="post_card_about_text">
+                                    <h4>{{post.user.name}}</h4>
+                                    <p>{{post.created_date.date()}} · {{post.views}} просмотров</p>
+                                </div>
                             </div>
-                        </div>
-                        <a href="{{url_for('news', news_id=post.id)}}">
-                        <div class="post_card_about_text">
-                            <h3 class="post_title">{{post.title}}</h3>
-                            <p class="post_text">{{post.content|striptags|truncate(80, true, '...')}}</p>
-                        </div>
-                        </a>
-                </div>
-            </article>
+                            <a href="{{url_for('news', news_id=post.id)}}">
+                            <div class="post_card_about_text">
+                                <h3 class="post_title">{{post.title}}</h3>
+                                <p class="post_text">{{post.content|striptags|truncate(80, true, '...')}}</p>
+                            </div>
+                            </a>
+                    </div>
+                </article>
             {% endfor %}
+        {% else %}
+            <div>
+                <h2>Просто пустая лента</h2>
+                <img src="../static/img/dragon1.jpg" width="200">
+            </div>
+        {% endif %}
 
     </div>
 {% endblock %}

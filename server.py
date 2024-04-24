@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from requests import post, get
-from data import db_session, giga_api
+from data import db_session, giga_api, api_upload_images
 from data.users import User
 from data.news import News
 from data.likes import Likes
@@ -274,7 +274,7 @@ def user_settings():
 def create_news():
     if current_user.is_confirmed:
         if request.method == 'GET':
-            return render_template('news_edit.html', news=None)
+            return render_template('news_edit.html', news=None, base_url=os.environ.get('BASE_URL'))
         elif request.method == 'POST':
             if request.form['title'] and request.form['text']:
                 db_sess = db_session.create_session()
@@ -287,7 +287,8 @@ def create_news():
                 db_sess.commit()
                 return redirect('/')
             else:
-                return render_template('news_edit.html', message='Заполните все поля', news=None)
+                return render_template('news_edit.html', message='Заполните все поля', news=None,
+                                       base_url=os.environ.get('BASE_URL'))
     else:
         return redirect('/')
 
@@ -345,7 +346,7 @@ def edit_news(news_id):
     news = db_sess.query(News).filter(News.id == news_id).first()
     if current_user.is_confirmed and news.user_id == current_user.id:
         if request.method == 'GET':
-            return render_template('news_edit.html', news=news)
+            return render_template('news_edit.html', news=news, base_url=os.environ.get('BASE_URL'))
         elif request.method == 'POST':
             if request.form['title'] and request.form['text']:
 
@@ -359,7 +360,8 @@ def edit_news(news_id):
                 db_sess.commit()
                 return redirect('/')
             else:
-                return render_template('news_edit.html', message='Заполните все поля', news=news)
+                return render_template('news_edit.html', message='Заполните все поля', news=news,
+                                       base_url=os.environ.get('BASE_URL'))
     else:
         return render_template('/')
 
@@ -376,6 +378,8 @@ def user(user_id):
         is_subscribed = False
     if user:
         return render_template('user.html', user=user, news=news, is_subscribed=is_subscribed)
+    else:
+        return render_template('error404.html')
 
 
 @app.route('/user/subscribe/<int:user_id>/<action>')
@@ -419,9 +423,20 @@ def search():
     return render_template('search.html', news=news, search=search)
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error404.html'), 404
+
+
+@app.errorhandler(401)
+def page_not_found(e):
+    return render_template('error401.html'), 401
+
+
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопастности данных в glitch
     db_session.global_init('.data/news.db')
     app.register_blueprint(giga_api.blueprint)
-    # app.run()
-    serve(app, host='0.0.0.0', port=5000)
+    app.register_blueprint(api_upload_images.blueprint)
+    app.run()
+    # serve(app, host='0.0.0.0', port=8080)
