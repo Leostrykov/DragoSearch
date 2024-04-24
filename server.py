@@ -377,7 +377,7 @@ def user(user_id):
     else:
         is_subscribed = False
     if user:
-        return render_template('user.html', user=user, news=news, is_subscribed=is_subscribed)
+        return render_template('user.html', user=user, news=news, is_subscribed=is_subscribed, title=user.name)
     else:
         return render_template('error404.html')
 
