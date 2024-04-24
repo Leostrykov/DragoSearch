@@ -31,11 +31,11 @@
                 tinymce.init({
                 selector: 'textarea',  // Change this value according to your HTML
                 language: 'ru',
-                plugins: 'accordion anchor autolink autoresize code codesample emoticons fullscreen insertdatetime link lists preview searchreplace table',
-                toolbar: 'undo redo fullscreen | blocks fontsize | bold italic underline strikethrough | link table mergetags | align accordion | checklist numlist bullist indent outdent | emoticons charmap insertdatetime code',
+                plugins: 'accordion anchor autolink autoresize code codesample emoticons fullscreen insertdatetime link lists preview searchreplace table ai ',
+                toolbar: 'undo redo fullscreen | idialog aishortcuts| blocks fontsize | bold italic underline strikethrough | link table mergetags | align accordion | checklist numlist bullist indent outdent | emoticons charmap insertdatetime code',
                 
                 ai_request: (request, respondWith) => {
-                    respondWith.string((signal) => fetch('{{base_url}}/api/upload_image', {
+                    respondWith.string((signal) => fetch('{{base_url}}/api/gigachat', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
