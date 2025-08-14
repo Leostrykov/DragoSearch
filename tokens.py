@@ -2,7 +2,7 @@ from itsdangerous import URLSafeTimedSerializer
 import os
 
 
-# генерирует токены для потверждения
+# генерирует токены для подтверждения
 def generate_token(email):
     serializer = URLSafeTimedSerializer(os.getenv("SECRET_KEY"))
     return serializer.dumps(email, salt=os.getenv("SECURITY_PASSWORD_SALT"))

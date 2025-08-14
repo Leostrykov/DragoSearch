@@ -26,7 +26,7 @@ load_dotenv(dotenv_path)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-# Загружаем SECURITY_PASSWORD_SALT, он нужен для генерации ссылок подверждения
+# Загружаем SECURITY_PASSWORD_SALT, он нужен для генерации ссылок подтверждения
 app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT')
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -147,7 +147,7 @@ def sing_up_mobile():
     return render_template('sing-up-for-mobile.html', form_sing_up=form_sing_up)
 
 
-# Страница востоновления пароля
+# Страница восстановления пароля
 @app.route('/login/fog-password', methods=['POST', 'GET'])
 def fog_password():
     form_fog_pass = FogPassword()
@@ -169,7 +169,7 @@ def fog_password():
     return render_template('fogot_password.html', form_fog_password=form_fog_pass)
 
 
-# страница, которая получает токен потверждения аккаунта
+# страница, которая получает токен подтверждения аккаунта
 @app.route("/confirm/<token>")
 @login_required
 def confirm_email(token):
@@ -178,7 +178,7 @@ def confirm_email(token):
     email = confirm_token(token)
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.email == current_user.email).first()
-    # если пользователь с такой почтой есть, то потверждаем
+    # если пользователь с такой почтой есть, то подтверждаем
     if user.email == email:
         user.is_confirmed = True
         user.confirmed_on = datetime.datetime.now()
@@ -293,7 +293,7 @@ def create_news():
         return redirect('/')
 
 
-# сраница поста
+# страница поста
 @app.route('/news/<int:news_id>')
 def news(news_id):
     db_sess = db_session.create_session()
@@ -445,9 +445,9 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    # храним базы данных в папке .data для безопастности данных в glitch
+    # храним базы данных в папке .data для безопасности данных в glitch
     db_session.global_init('.data/news.db')
     app.register_blueprint(giga_api.blueprint)
     # app.run()
-    # как оказывается waitress изначально использует один поток, из-за чего когда заходили много людей сервер падал...
+    # как оказывается waitress изначально, использует один поток, из-за чего когда заходили много людей сервер падал...
     serve(app, host='0.0.0.0', port=8080, threads=8)

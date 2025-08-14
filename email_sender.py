@@ -34,7 +34,7 @@ def send_email(email, subject, text, type_message):
         print(f'Error send message {email}. Error: {e}')
 
 
-# функция отправки подверждения
+# функция отправки подтверждения
 def send_token(email):
     return send_email(email, 'Потвердите почту на DragoSearch',
                       render_template('confirm_message.html',
