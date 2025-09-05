@@ -6,6 +6,6 @@ flask-login
 werkzeug
 itsdangerous
 requests
-urllib3<2.0
+urllib3~> 2.5.0
 WTForms
 waitress
