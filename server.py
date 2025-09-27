@@ -446,7 +446,7 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     # храним базы данных в папке .data для безопасности данных в glitch
-    db_session.global_init('./.etc/secrets/data.db')
+    db_session.global_init('./data.db')
     app.register_blueprint(giga_api.blueprint)
     # app.run()
     # как оказывается waitress изначально, использует один поток, из-за чего когда заходили много людей сервер падал...
