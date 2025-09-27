@@ -9,3 +9,4 @@ requests
 urllib3~> 2.5.0
 WTForms
 waitress
+requests
