@@ -4,3 +4,6 @@
 .data
 __pycache__
 /.etc/
+Dockerfile
+docker-compose.yml
+data.db
