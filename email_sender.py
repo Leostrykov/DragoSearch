@@ -1,20 +1,24 @@
 from tokens import generate_token
 from flask import render_template
 import smtplib
-import mimetypes
 import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import secrets
-import string
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SMTP_SERVER = os.getenv('MAIL_HOST')
+SMTP_PORT = os.getenv('MAIL_PORT')
+SMTP_LOGIN = os.getenv('MAIL_LOGIN')
+SMTP_PASS = os.getenv('MAIL_PASSWORD')
+SMTP_FROM = os.getenv('MAIL_FROM')
 
 
 # функция отправления сообщения
 def send_email(email, subject, text, type_message):
-    addr_from = os.getenv('MAIL_FROM')
-    password = os.getenv('MAIL_PASSWORD')
     msg = MIMEMultipart()
-    msg['From'] = addr_from
+    msg['From'] = SMTP_FROM
     msg['To'] = email
     msg['Subject'] = subject
 
@@ -25,8 +29,8 @@ def send_email(email, subject, text, type_message):
         msg.attach(MIMEText(body, 'html'))
 
     try:
-        server = smtplib.SMTP_SSL(os.getenv('MAIL_HOST'), os.getenv('MAIL_PORT'))
-        server.login(addr_from, password)
+        server = smtplib.SMTP_SSL(SMTP_SERVER, int(SMTP_PORT))
+        server.login(SMTP_LOGIN, SMTP_PASS)
         server.send_message(msg)
         server.quit()
         return True
@@ -36,6 +40,6 @@ def send_email(email, subject, text, type_message):
 
 # функция отправки подтверждения
 def send_token(email):
-    return send_email(email, 'Потвердите почту на DragoSearch',
+    return send_email(email, 'Подведите почту на DragoSearch',
                       render_template('confirm_message.html',
                                       confirm_url=os.getenv('BASE_URL') + 'confirm/' + generate_token(email)),'html')
