@@ -25,6 +25,11 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 app = Flask(__name__)
+
+# храним базы данных в папке .data для безопасности данных в glitch
+db_session.global_init('./data.db')
+app.register_blueprint(giga_api.blueprint)
+
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 # Загружаем SECURITY_PASSWORD_SALT, он нужен для генерации ссылок подтверждения
 app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT')
@@ -445,9 +450,7 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    # храним базы данных в папке .data для безопасности данных в glitch
-    db_session.global_init('./data.db')
-    app.register_blueprint(giga_api.blueprint)
+
     app.run(debug=False)
     # как оказывается waitress изначально, использует один поток, из-за чего когда заходили много людей сервер падал...
     # serve(app, host='0.0.0.0', port=8080, threads=8)
