@@ -48,7 +48,9 @@ def load_user(user_id):
 def index():
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.is_private != 1).order_by(News.created_date.desc()).all()
-    return render_template('news.html', title='DragoSearch', news=news, selected='home')
+    return render_template('news.html', title='DragoSearch', news=news, selected='home',
+                           base_url=os.environ.get('BASE_URL'),
+                           yandex_client_id=os.environ.get("YANDEX_CLIENT_ID"))
 
 
 # страница входа
@@ -317,7 +319,9 @@ def news(news_id):
     if news:
         news.views += 1
         db_sess.commit()
-        return render_template('user_text_post.html', news=news, title=news.title, base_url=os.environ.get('BASE_URL'), like=like)
+        return render_template('user_text_post.html', news=news,
+                               title=news.title, base_url=os.environ.get('BASE_URL'),
+                               yandex_client_id=os.environ.get("YANDEX_CLIENT_ID"), like=like)
 
 
 # обработка лайков
@@ -400,7 +404,9 @@ def user(user_id):
     else:
         is_subscribed = False
     if user:
-        return render_template('user.html', user=user, news=news, is_subscribed=is_subscribed, title=user.name)
+        return render_template('user.html', user=user, news=news,
+                               is_subscribed=is_subscribed, title=user.name, base_url=os.environ.get('BASE_URL'),
+                               yandex_client_id=os.environ.get("YANDEX_CLIENT_ID"))
     else:
         return render_template('error404.html')
 

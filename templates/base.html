@@ -37,11 +37,11 @@
         <script>
                 YaAuthSuggest.init(
               {
-                 client_id: 'e0fd35f9d8dd4371a33bb5a6085c689e',
+                 client_id: '{{ yandex_client_id }}',
                  response_type: 'token',
-                 redirect_uri: 'https://dragosearch.ru/login/authorized'
+                 redirect_uri: '{{base_url}}login/authorized'
               },
-              'https://dragosearch.ru'
+              '{{ base_url }}'
            )
            .then(({
               handler
