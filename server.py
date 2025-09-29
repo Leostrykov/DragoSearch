@@ -73,11 +73,13 @@ def login():
                            f'в {datetime.datetime.now().strftime("%A %d-%B-%y %H:%M:%S")} '
                            f'\n---\nС уважением отдел оповещений DragoSearch', 'text')
                 return redirect('/')
-            return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+            return render_template('login.html', oauth_client_id = os.environ.get("YANDEX_CLIENT_ID"),
+                                   form_sing_in=form_login, form_sing_up=form_sing_up,
                                    message_login='Неверный пароль или почта')
         except Exception as e:
             print(f'Error login email:{form_login.email.data}. Error: {e}')
-            return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+            return render_template('login.html', oauth_client_id = os.environ.get("YANDEX_CLIENT_ID"),
+                                   form_sing_in=form_login, form_sing_up=form_sing_up,
                                    message_login='Произошла не известная ошибка на сервере')
     # получение данных с form_sing_up
     elif form_sing_up.validate_on_submit() and form_sing_up.submit_sing_up.data:
@@ -85,7 +87,8 @@ def login():
             db_sess = db_session.create_session()
             is_not_log = db_sess.query(User).filter(User.email == form_sing_up.email.data).first()
             if is_not_log is not None:
-                return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+                return render_template('login.html', oauth_client_id = os.environ.get("YANDEX_CLIENT_ID"),
+                                       form_sing_in=form_login, form_sing_up=form_sing_up,
                                        message_sing_up='Пользователь с такой почтой уже существует')
             if len(form_sing_up.password.data) >= 7:
                 user = User(name=form_sing_up.name.data, email=form_sing_up.email.data)
@@ -97,18 +100,22 @@ def login():
                 if send_token(form_sing_up.email.data):
                     return render_template('confirm_email.html', email=form_sing_up.email.data)
                 else:
-                    return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+                    return render_template('login.html', oauth_client_id = os.environ.get("YANDEX_CLIENT_ID"),
+                                           form_sing_in=form_login, form_sing_up=form_sing_up,
                                            message_sing_up='Не удалось отправить сообщение с подверждением.')
             else:
-                return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+                return render_template('login.html', oauth_client_id = os.environ.get("YANDEX_CLIENT_ID"),
+                                       form_sing_in=form_login, form_sing_up=form_sing_up,
                                        message_sing_up='Пароль должен быть не менее 7 символов.')
 
         except Exception as e:
             print(f'Error sing_up email:{form_sing_up.email.data}. Error:{e}')
-            return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up,
+            return render_template('login.html', oauth_client_id = os.environ.get("YANDEX_CLIENT_ID"),
+                                   form_sing_in=form_login, form_sing_up=form_sing_up,
                                    message_sing_up='Произошла не известная ошибка.')
 
-    return render_template('login.html', form_sing_in=form_login, form_sing_up=form_sing_up)
+    return render_template('login.html', oauth_client_id = os.environ.get("YANDEX_CLIENT_ID"),
+                           form_sing_in=form_login, form_sing_up=form_sing_up)
 
 
 @app.route('/logout')
@@ -450,7 +457,6 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-
     app.run(debug=False)
     # как оказывается waitress изначально, использует один поток, из-за чего когда заходили много людей сервер падал...
     # serve(app, host='0.0.0.0', port=8080, threads=8)
