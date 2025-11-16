@@ -1,12 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Ошибка 404</h1>
-    <h2>Как вы здесь оказались?</h2>
-    <p>Похоже, что страница на которую вы пытаетесь перейти не существует или была удалена.</p>
-    <p>Вы можете перейти на главную страницу или посмотреть на танцующего дракончика.</p>
-    <video width="400" height="400" autoplay loop controls muted class="video">
-      <source src="{{url_for('static', filename='video/drago_dance.mp4')}}" type="video/mp4">
-      Ваш браузер не поддерживает тег video.
-    </video>
+ <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 1em;">
+  <h1>Ошибка 404</h1>
+    <p style="text-align: center;">Похоже, что страница на которую вы пытаетесь перейти не существует или она пересена.</p>
+    <img src="{{url_for('static', filename='img/404 Not Found.png')}}" style="width: 100%; max-width: 500px;">
+</div>
 {% endblock %}

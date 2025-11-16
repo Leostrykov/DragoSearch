@@ -1,91 +1,136 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Редактор статьи</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <script src="https://cdn.tiny.cloud/1/u7wzz66re7r5pa1712et5t5xqh5pij39voydqshl83cpeh7p/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <script
+      src="https://cdn.tiny.cloud/1/u7wzz66re7r5pa1712et5t5xqh5pij39voydqshl83cpeh7p/tinymce/7/tinymce.min.js"
+      referrerpolicy="origin"
+    ></script>
+  </head>
+  <body>
     <form action="" method="post" enctype="multipart/form-data">
-    <header>
+      <header>
         <div class="logo">
-            <a href="{{url_for('index')}}">DragoSearch</a>
+          <a href="{{url_for('index')}}">DragoSearch</a>
         </div>
-        <input type="submit" value="Сохранить" name="submit"></input>
-    </header>
-    <section style="padding: 0 20px;">
+        <input type="submit" value="Сохранить" name="submit" />
+      </header>
+      <section style="padding: 0 20px">
         <h2>Заголовок статьи</h2>
-        <input type="text" name="title" value="{{news.title}}">
+        <input type="text" name="title" value="{{news.title}}" />
         <h2>Обложка статьи</h2>
-        <div style="display: flex; flex-direction: column;">
-            <label id="button" for="file" class="load_file" style="width: 15%;">Загрузить обложку</label>
-            <input id="file" type="file" name="image" style="display: none;">
-            <img id="image" width="300px" src="../static/img/news/{{news.image}}">
+        <div style="display: flex; flex-direction: column">
+          <label id="button" for="file" class="load_file" style="width: 15%"
+            >Загрузить обложку</label
+          >
+          <input id="file" type="file" name="image" style="display: none" />
+          <img
+            id="image"
+            width="300px"
+            src="../static/img/news/{{news.image}}"
+          />
+          <p id="message_of_image" class="error"></p>
         </div>
         {% if message %}
-            <p class="error">{{message}}</p>
+        <p class="error">{{message}}</p>
         {% endif %}
         <script>
-                tinymce.init({
-                selector: 'textarea',  // Change this value according to your HTML
-                language: 'ru',
-                plugins: 'accordion anchor autolink autoresize code codesample emoticons fullscreen insertdatetime link lists preview searchreplace table ai ',
-                toolbar: 'undo redo fullscreen | idialog aishortcuts| blocks fontsize | bold italic underline strikethrough | link table mergetags | align accordion | checklist numlist bullist indent outdent | emoticons charmap insertdatetime code',
-                
-                ai_request: (request, respondWith) => {
-                    respondWith.string((signal) => fetch('{{base_url}}/api/gigachat', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'Authorization': 'Bearer {{gigaauth_token}}'
-                            },
-                            body: JSON.stringify({
-                                'message': request.prompt
-                            })
-                            })
-                            .then(async (response) => {
-                                    if (response) {
-                                    const data = await response.json();
-                                    if (data.error) {
-                                        throw new Error(`${data.error.type}: ${data.error.message}`);
-                                    } else if (response.ok) {
-                                        // Extract the response content from the data returned by the API
-                                        return data?.choices[0]?.message?.content?.trim();
-                                    }
-                                    } else {
-                                    throw new Error('Failed to communicate with the ChatGPT API');
-                                    }
-                                })
-                                );
-                            
+          tinymce.init({
+            selector: "textarea", // Change this value according to your HTML
+            language: "ru",
+            plugins:
+              "accordion anchor autolink autoresize code codesample emoticons fullscreen insertdatetime link lists preview searchreplace table ai ",
+            toolbar:
+              "undo redo fullscreen | idialog aishortcuts| blocks fontsize | bold italic underline strikethrough | link table mergetags | align accordion | checklist numlist bullist indent outdent | emoticons charmap insertdatetime code",
 
-                        }
-            });
+            ai_request: (request, respondWith) => {
+              respondWith.string((signal) =>
+                fetch("{{base_url}}/api/gigachat", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: "Bearer {{gigaauth_token}}",
+                  },
+                  body: JSON.stringify({
+                    message: request.prompt,
+                  }),
+                }).then(async (response) => {
+                  if (response) {
+                    const data = await response.json();
+                    if (data.error) {
+                      throw new Error(
+                        `${data.error.type}: ${data.error.message}`
+                      );
+                    } else if (response.ok) {
+                      // Extract the response content from the data returned by the API
+                      return data?.choices[0]?.message?.content?.trim();
+                    }
+                  } else {
+                    throw new Error(
+                      "Failed to communicate with the ChatGPT API"
+                    );
+                  }
+                })
+              );
+            },
+          });
         </script>
         <textarea name="text">
             {{news.content | safe}}
         </textarea>
-    </section>
+      </section>
     </form>
     <script>
-            document.getElementById('file').addEventListener('change', function() {
-                var file = this.files[0];
-                var image = document.getElementById('image');
-                var reader = new FileReader();
+      document.getElementById("file").addEventListener("change", function() {
+        const file = this.files[0];
+        const image = document.getElementById("image");
+        const imageError = document.getElementById("message_of_image");
 
-                reader.onload = function(e) {
+        // Очищаем предыдущее сообщение об ошибке
+        imageError.textContent = "";
+
+        if (!file) {
+            image.src = "default.jpg";
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            // Создаём временный Image объект для проверки размеров
+            const tempImg = new Image();
+
+            tempImg.onload = function() {
+                if (tempImg.naturalWidth > tempImg.naturalHeight) {
+                    // Альбомный формат — загружаем в превью
                     image.src = e.target.result;
-                };
-
-                if (file) {
-                    reader.readAsDataURL(file);
                 } else {
-                    image.src = 'default.jpg';
+                    // Не альбомный формат — показываем ошибку
+                    imageError.textContent = "Изображение должно быть в альбомном формате (ширина > высоты)";
+                    image.src = ""; // Очищаем превью
                 }
-            });
+            };
+
+            tempImg.onerror = function() {
+                imageError.textContent = "Не удалось загрузить изображение";
+                image.src = "";
+            };
+
+            // Начинаем загрузку изображения
+            tempImg.src = e.target.result;
+        };
+
+        reader.onerror = function() {
+            imageError.textContent = "Ошибка при чтении файла";
+        };
+
+        reader.readAsDataURL(file);
+    });
+
     </script>
-</body>
+  </body>
 </html>

@@ -173,7 +173,7 @@ def fog_password():
                                    message_fog_password='Мы не нашли пользователя с такой почтой')
         password = generate_password()
         if send_email(user.email, f'Восстановление пароля DragoSearch',
-                      f'Вы отправили запрос на генерацию нового пароля\nВот ваш новый пароль:{password}', 'text'):
+                      f'Вы отправили запрос на генерацию нового пароля\nВот ваш новый пароль {password}', 'text'):
             user.set_password(password)
             db_sess.commit()
             return render_template('confirm_fog_password.html', email=user.email)
