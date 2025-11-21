@@ -22,7 +22,7 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6, .user_icon {
   font-family: "Raleway", sans-serif;
 }
 
@@ -154,9 +154,16 @@ input[type="submit"],
 }
 
 .user_icon {
-  border-radius: 100px;
-  width: 32px;
-  height: 32px;
+  width: 2em;
+  height: 2em;
+  background-color: #ccc;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  margin-right: 8px;
+  font-weight: bold;
 }
 
 .large {

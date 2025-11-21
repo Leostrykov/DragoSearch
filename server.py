@@ -290,6 +290,7 @@ def create_news():
         if request.method == 'GET':
             return render_template('news_edit.html', news=None, base_url=os.environ.get('BASE_URL'))
         elif request.method == 'POST':
+            print(request.files)
             if request.form['title'] and request.form['text']:
                 db_sess = db_session.create_session()
                 file = request.files['image']

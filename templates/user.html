@@ -10,30 +10,25 @@
 >
   <div class="user_about">
     {% if user.avatar_is_file is false and user.avatar is not none %}
-    <a
-      ><img
-        class="user_icon large"
+    <a><img class="user_icon large"
         src="https://avatars.yandex.net/get-yapic/{{user.avatar}}/islands-68"
         alt="Иконка пользователя"
         width="4em"
-        height="4em"
-    /></a>
+        height="4em"/>
+    </a>
     {% elif user.avatar_is_file and user.avatar is not none %}
-    <a
-      ><img
-        class="user_icon large"
+    <a><img class="user_icon large"
         src="{{ url_for('static', filename='img/avatars/' + user.avatar) }}"
         alt="Иконка пользователя"
         width="4em"
-        height="4em"
-    /></a>
+        height="4em"/>
+    </a>
     {% else %}
-    <a
-      ><div
-        class="user_icon large"
-        style="background-color: rgb(193, 193, 193); height: 4em; width: 4em"
-      ></div
-    ></a>
+    <a>
+      <div class="user_icon large" style="height: 4em; width: 4em">
+        <p style="height: 100%; font-size: 25px; position: relative; top: 16px;">{{user.name[0]}}</p>
+      </div>
+    </a>
     {% endif %}
     <div class="user_card_about_text">
       <h2 style="font-size: 1.5em">{{user.name}}</h2>
@@ -51,67 +46,52 @@
       align-items: center;
       justify-content: center;
       gap: 1em;
-    "
-  >
-    {% if current_user.is_authenticated and user.id != current_user.id%} {% if
-    is_subscribed %}
-    <a
-      class="action_button"
-      href="{{url_for('subscribe', user_id=user.id, action='unsubscribe')}}"
-      ><p>Отписаться</p></a
-    >
-    {% else %}
-    <a
-      class="action_button"
-      href="{{url_for('subscribe', user_id=user.id, action='subscribe')}}"
-      ><p>Подписаться</p></a
-    >
-    {% endif %} {% endif %} {% if user.id == current_user.id %}
-    <a class="action_button" href="{{url_for('user_settings')}}"
-      ><img src="../static/img/manage_accounts.svg"
-    /></a>
-    <a class="action_button" href="{{url_for('create_news')}}"
-      ><img src="../static/img/add.svg"
-    /></a>
+      ">
+    
+    {% if current_user.is_authenticated and user.id != current_user.id%} 
+      {% if is_subscribed %}
+      <a class="action_button" href="{{url_for('subscribe', user_id=user.id, action='unsubscribe')}}">
+        <p>Отписаться</p>
+      </a>
+      {% else %}
+      <a class="action_button" href="{{url_for('subscribe', user_id=user.id, action='subscribe')}}">
+        <p>Подписаться</p>
+      </a>
+      {% endif %} 
+    {% endif %} 
+    {% if user.id == current_user.id %}
+    <a class="action_button" href="{{url_for('user_settings')}}">
+      <img src="../static/img/manage_accounts.svg"/>
+    </a>
+    <a class="action_button" href="{{url_for('create_news')}}">
+      <img src="../static/img/add.svg"/>
+    </a>
     {% endif %}
   </div>
 </div>
   <div class="posts">
   {% if news%} {% for post in news %}
     <article class="post_card">
-      <a href="{{url_for('news', news_id=post.id)}}"
-        ><img
-          class="post_image"
-          src="../static/img/news/{{post.image}}"
-          alt="Изображение поста"
-      /></a>
+      <a href="{{url_for('news', news_id=post.id)}}">
+        <img class="post_image" src="../static/img/news/{{post.image}}" alt="Изображение поста"/>
+      </a>
       <div class="post_card_content">
         <div class="post_card_about">
-          {% if post.user.avatar_is_file is false and post.user.avatar is not none
-          %}
-          <a
-            ><img
-              class="user_icon"
-              src="https://avatars.yandex.net/get-yapic/{{post.user.avatar}}/islands-small"
-              alt="Иконка пользователя"
-          /></a>
+          {% if post.user.avatar_is_file is false and post.user.avatar is not none %}
+          <a>
+            <img class="user_icon" src="https://avatars.yandex.net/get-yapic/{{post.user.avatar}}/islands-small" alt="Иконка пользователя"/>
+          </a>
           {% elif post.user.avatar_is_file and post.user.avatar is not none %}
           <a>
-            <img
-              class="user_icon"
-              src="{{ url_for('static', filename='img/avatars/' + post.user.avatar) }}"
-              alt="Иконка пользователя"
-            />
+            <img class="user_icon" src="{{ url_for('static', filename='img/avatars/' + post.user.avatar) }}" alt="Иконка пользователя"/>
           </a>
           {% else %}
-          <a><div
-              class="user_icon"
-              style="background-color: rgb(193, 193, 193)">
-              </div>
+          <a>
+            <div class="user_icon"><p style="font-size: 12px; position: relative; top: -3px;">{{post.user.name[0]}}</p></div>
           </a>
           {% endif %}
           <div class="post_card_about_text">
-            <h4>{{post.user.name}}</h4>
+            <h4 style="font-weight: bold;"">{{post.user.name}}</h4>
             <p>{{post.created_date.date()}} · {{post.views}} просмотров</p>
           </div>
         </div>

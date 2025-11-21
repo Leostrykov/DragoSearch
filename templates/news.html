@@ -27,16 +27,13 @@
             alt="Иконка пользователя"
         /></a>
         {% else %}
-        <a href="{{ url_for('user', user_id=post.user_id) }}"
-          ><div
-            class="user_icon"
-            style="background-color: rgb(193, 193, 193)"
-          ></div
-        ></a>
+        <a href="{{ url_for('user', user_id=post.user_id) }}">
+          <div class="user_icon"><p style="font-size: 12px; position: relative; top: -3px;">{{post.user.name[0]}}</p></div>
+        </a>
         {% endif %}
         <a href="{{ url_for('user', user_id=post.user_id) }}">
           <div class="post_card_about_text">
-            <h4>{{post.user.name}}</h4>
+            <h4 style="font-weight: bold;">{{post.user.name}}</h4>
             <p>{{post.created_date.date()}} · {{post.views}} просмотров</p>
           </div>
         </a>
