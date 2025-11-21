@@ -464,6 +464,6 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    # app.run(debug=False)
     # как оказывается waitress изначально, использует один поток, из-за чего когда заходили много людей сервер падал...
-    # serve(app, host='0.0.0.0', port=8080, threads=8)
+    serve(app, host='0.0.0.0', port=8080, threads=8)
