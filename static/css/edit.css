@@ -259,3 +259,20 @@ input[type="submit"],
 .error {
   color: red;
 }
+
+#editor {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  min-height: 200px;
+  font-family: Arial, sans-serif;
+}
+
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 0 0 8px 0;
+}
+

@@ -288,10 +288,9 @@ def user_settings():
 def create_news():
     if current_user.is_confirmed:
         if request.method == 'GET':
-            return render_template('news_edit.html', news=None, base_url=os.environ.get('BASE_URL'))
+            return render_template('news_edit.html', news={}, base_url=os.environ.get('BASE_URL'))
         elif request.method == 'POST':
-            print(request.files)
-            if request.form['title'] and request.form['text']:
+            if request.form['title'] and request.form['text'] and request.files['image']:
                 db_sess = db_session.create_session()
                 file = request.files['image']
                 os.makedirs(f'static/img/news', exist_ok=True)
@@ -302,7 +301,8 @@ def create_news():
                 db_sess.commit()
                 return redirect('/')
             else:
-                return render_template('news_edit.html', message='Заполните все поля', news=None,
+                return render_template('news_edit.html', message='Заполните все поля',
+                                       news={'content': request.form['text'], 'title': request.form['title']},
                                        base_url=os.environ.get('BASE_URL'))
     else:
         return redirect('/')
@@ -464,6 +464,6 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    # app.run(debug=False)
+    app.run(debug=False)
     # как оказывается waitress изначально, использует один поток, из-за чего когда заходили много людей сервер падал...
-    serve(app, host='0.0.0.0', port=8080, threads=8)
+    # serve(app, host='0.0.0.0', port=8080, threads=8)

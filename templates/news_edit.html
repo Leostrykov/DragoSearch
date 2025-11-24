@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактор статьи</title>
     <link rel="stylesheet" href="{{url_for('static', filename='/css/edit.css')}}">
-    <script
-      src="https://cdn.tiny.cloud/1/u7wzz66re7r5pa1712et5t5xqh5pij39voydqshl83cpeh7p/tinymce/7/tinymce.min.js"
-      referrerpolicy="origin"></script>
+
+    <script src="{{url_for('static', filename='js/dist/bundle.js')}}" type="module"></script>
 </head>
 <body>
     <section class="shadow"></section>
@@ -61,56 +60,16 @@
               </div>
             </div>
             <input type="text" class="title-input" name="title" placeholder="Заголовок" value="{{news.title}}">
-            <textarea class="text-area" placeholder="Текст" name="text">{{news.content | safe}}</textarea>
+            <input type="hidden" id="editor-content" name="text" value="">
+            <!-- A Tiptap editor -->
+            <div id="editor" style="min-height: 400px; border: 1px solid #ddd; margin: 10px 0;"></div>
           </form>
         </main>
     </div>
 </body>
 
 <script>
-  tinymce.init({
-    selector: "textarea", // Change this value according to your HTML
-    language: "ru",
-    plugins:
-      "accordion anchor autolink autoresize code codesample emoticons fullscreen insertdatetime link lists preview searchreplace table ai ",
-    toolbar:
-      "undo redo fullscreen | idialog aishortcuts| blocks fontsize | bold italic underline strikethrough | link table mergetags | align accordion | checklist numlist bullist indent outdent | emoticons charmap insertdatetime code",
-
-    ai_request: (request, respondWith) => {
-      respondWith.string((signal) =>
-        fetch("{{base_url}}/api/gigachat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: "Bearer {{gigaauth_token}}",
-          },
-          body: JSON.stringify({
-            message: request.prompt,
-          }),
-        }).then(async (response) => {
-          if (response) {
-            const data = await response.json();
-            if (data.error) {
-              throw new Error(
-                `${data.error.type}: ${data.error.message}`
-              );
-            } else if (response.ok) {
-              // Extract the response content from the data returned by the API
-              return data?.choices[0]?.message?.content?.trim();
-            }
-          } else {
-            throw new Error(
-              "Failed to communicate with the ChatGPT API"
-            );
-          }
-        })
-      );
-    },
-  });
-</script>
-
-<script>
+    window.content = "{{news.content | safe}}"
     document.querySelector('.publish-btn').addEventListener('click', function() {
       document.querySelector('.popup').style.display = 'block';
       document.querySelector('.shadow').style.display = 'block';

@@ -15,7 +15,7 @@ YaAuthSuggest.init(
        response_type: 'token',
        redirect_uri: 'https://examplesite.com/suggest/token'
     },
-    'https://examplesite.com', 
+    'https://examplesite.com',
     {
        view: 'button',
        parentId: 'container',
